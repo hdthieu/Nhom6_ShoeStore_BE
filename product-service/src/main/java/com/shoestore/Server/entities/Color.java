@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum Color {
     RED("Red"),
     GREEN("Green"),
@@ -14,8 +13,12 @@ public enum Color {
     WHITE("White"),
     PINK("Pink");
 
-
     private final String colorName;
+
+    // Constructor cần khai báo rõ ràng
+    Color(String colorName) {
+        this.colorName = colorName;
+    }
 
     @Override
     public String toString() {

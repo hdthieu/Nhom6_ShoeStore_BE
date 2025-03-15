@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum Size {
     SIZE_36(36),
     SIZE_37(37),
@@ -18,9 +17,15 @@ public enum Size {
 
     private final int sizeValue;
 
+    // Constructor bắt buộc phải là private (hoặc mặc định)
+    Size(int sizeValue) {
+        this.sizeValue = sizeValue;
+    }
+
     @Override
     public String toString() {
         return String.valueOf(sizeValue);
     }
 }
+
 

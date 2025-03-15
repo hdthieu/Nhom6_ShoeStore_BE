@@ -15,8 +15,6 @@ import java.util.List;
 @Table
 @Getter
 @Setter
-@NoArgsConstructor
-
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,7 +53,9 @@ public class Product {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createDate;
 
+    public Product() {
 
+    }
     public Product(int productID, String productName, List<String> imageURL, String description, double price, String status, Brand brand, Supplier supplier, Category category, LocalDateTime createDate) {
         this.productID = productID;
         this.productName = productName;
