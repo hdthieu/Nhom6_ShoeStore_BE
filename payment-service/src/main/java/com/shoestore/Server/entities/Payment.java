@@ -17,9 +17,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "paymentID")
     private int paymentID;
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "orderID")
-//    private Order order;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "orderID")
+    private Order order;
     private int OrderID;
 
     private LocalDate paymentDate;
