@@ -1,7 +1,9 @@
 package com.shoestore.Server.service.impl;
 
 
+import com.shoestore.Server.entities.Color;
 import com.shoestore.Server.entities.ProductDetail;
+import com.shoestore.Server.entities.Size;
 import com.shoestore.Server.repositories.ProductDetailRepository;
 import com.shoestore.Server.service.ProductDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,4 +46,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public ProductDetail getProductDetailById(int id) {
         return productDetailRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public ProductDetail getProductDetailByProductIdAndColorAndSize(int productId, Color color, Size size) {
+        return productDetailRepository.findOneByColorSizeAndProductId(productId, color, size);
+    }
+
 }

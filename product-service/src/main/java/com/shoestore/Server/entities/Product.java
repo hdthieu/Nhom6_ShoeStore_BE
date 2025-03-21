@@ -3,6 +3,10 @@ package com.shoestore.Server.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,13 +24,24 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "productID")
     private int productID;
-    @Column(name = "productName")
+    @Column(name = "productName", nullable = false)
+    @NotBlank(message = "Tên sản phẩm không được để trống") // Không cho phép null hoặc chuỗi rỗng
+    @Size(min = 5, max = 50, message = "Tên sản phẩm phải từ 5 đến 50 ký tự")
+    @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "Tên sản phẩm chỉ được chứa chữ, số và khoảng trắng") // Chỉ cho phép chữ, số và khoảng trắng
     private String productName;
+
     @ElementCollection
     @CollectionTable(name = "Product_ImageURL", joinColumns = @JoinColumn(name = "productID"))
     @Column(name = "imageURL")
     private List<String> imageURL;
+
+    @Column(name = "description", nullable = false, length = 100)
+    @NotBlank(message = "Mô tả không được để trống")
+    @Size(max = 100, message = "Mô tả không được vượt quá 100 ký tự")
     private String description;
+
+    @Column(name = "price", nullable = false)
+    @DecimalMin(value = "0", inclusive = false, message = "Giá phải lớn hơn 0")
     private double price;
     private String status;
 
