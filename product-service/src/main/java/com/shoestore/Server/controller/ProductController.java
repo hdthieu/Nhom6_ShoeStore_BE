@@ -7,11 +7,13 @@ import com.shoestore.Server.service.BrandService;
 import com.shoestore.Server.service.CategoryService;
 import com.shoestore.Server.service.ProductService;
 import com.shoestore.Server.service.SupplierService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 
 
@@ -31,6 +33,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/products")
@@ -112,8 +115,19 @@ public class ProductController {
             @RequestParam("status") String status,  // Trạng thái sản phẩm
             @RequestParam("brandID") int brandID,  // ID thương hiệu
             @RequestParam("categoryID") int categoryID,  // ID danh mục
-            @RequestParam("supplierID") int supplierID  // ID nhà cung cấp
+            @RequestParam("supplierID") int supplierID ,
+            @Valid @ModelAttribute Product product, BindingResult bindingResult
     ) {
+
+        if (bindingResult.hasErrors()) {
+            // Trả về lỗi nếu có
+            String errorMessage = bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .collect(Collectors.joining(", "));
+            System.out.println(errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        }
+
         try {
             // Kiểm tra tham số đầu vào
             if (productName == null || productName.isEmpty()) {
@@ -156,7 +170,7 @@ public class ProductController {
             }
 
             // Tạo đối tượng Product từ các tham số nhận được
-            Product product = new Product();
+            product = new Product();
             product.setProductName(productName);
             product.setDescription(description);
             product.setPrice(price);
@@ -188,9 +202,7 @@ public class ProductController {
     }
 
 
-
-
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/del/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable int id) {
         boolean isDeleted = productService.deleteProduct(id);
         if (isDeleted) {
@@ -220,20 +232,41 @@ public class ProductController {
         }
     }
     @PutMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity<?> updateProduct(
             @PathVariable int id,
             @RequestParam(value = "image", required = false) MultipartFile[] files ,  // Tham số ảnh có thể có hoặc không
             @RequestParam("productName") String productName,  // Tên sản phẩm
             @RequestParam("description") String description,  // Mô tả sản phẩm
-            @RequestParam("price") double price,  // Giá sản phẩm
+            @RequestParam("price") String priceStr,  // Giá sản phẩm
             @RequestParam("status") String status,  // Trạng thái sản phẩm
-            @RequestParam("brand") int brandID,  // ID thương hiệu
-            @RequestParam("category") int categoryID,  // ID danh mục
-            @RequestParam("supplier") int supplierID  // ID nhà cung cấp
+            @RequestParam("brandID") int brandID,  // ID thương hiệu
+            @RequestParam("categoryID") int categoryID,  // ID danh mục
+            @RequestParam("supplierID") int supplierID,  // ID nhà cung cấp
+            @Valid @ModelAttribute Product existingProduct, BindingResult bindingResult
     ) {
+
+
+        double price = 0;
+        if (priceStr != null && !priceStr.isEmpty()) {
+            try {
+                price = Double.parseDouble(priceStr); // Chuyển đổi sang double
+            } catch (NumberFormatException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giá sản phẩm không hợp lệ.");
+            }
+        }else
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Giá sản phẩm không được rỗng.");
+
+        if (bindingResult.hasErrors()) {
+            // Trả về lỗi nếu có
+            String errorMessage = bindingResult.getAllErrors().stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .collect(Collectors.joining(", "));
+            System.out.println(errorMessage);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+        }
         try {
             // Tìm sản phẩm hiện tại từ ID
-            Product existingProduct = productService.getProductById(id);
+            existingProduct = productService.getProductById(id);
             if (existingProduct == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  // Nếu không tìm thấy sản phẩm
             }
