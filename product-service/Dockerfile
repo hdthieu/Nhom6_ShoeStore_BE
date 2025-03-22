@@ -10,7 +10,7 @@ ENV APP_NAME=PRODUCT-SERVICE
 ENV APP_PORT=8081
 
 # Copy file JAR vào container
-COPY target/order-service-0.0.1-SNAPSHOT.jar app.jar
+COPY target/product-service-0.0.1-SNAPSHOT.jar app.jar
 
 # Mở cổng ứng dụng
 EXPOSE 8081

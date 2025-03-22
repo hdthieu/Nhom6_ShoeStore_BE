@@ -11,7 +11,7 @@ import java.util.Map;
 public interface OrderService {
     public List<Order> findAll();
     public Map<String, Object> getRevenueStatistics(LocalDate startDate, LocalDate endDate);
-//    public Map<String, Object> getRevenueAndQuantityForCurrentYear();
+    public Map<String, Object> getRevenueAndOrdersForCurrentYear();
 //    public List<Object[]> getTop10LoyalCustomers(int minOrders);
     public Map<String, Long> getOrderStatistics();
     public void updateOrderStatus(int orderId, String status) ;

@@ -93,11 +93,11 @@ public class OrderController {
                 })
                 .collect(Collectors.toList());
     }
-//    @GetMapping("/yearly-revenue")
-//    public ResponseEntity<Map<String, Object>> getYearlyRevenue() {
-//        Map<String, Object> data = orderService.getRevenueAndQuantityForCurrentYear();
-//        return ResponseEntity.ok(data);
-//    }
+    @GetMapping("/yearly-revenue")
+    public ResponseEntity<Map<String, Object>> getYearlyRevenue() {
+        Map<String, Object> data = orderService.getRevenueAndOrdersForCurrentYear();
+        return ResponseEntity.ok(data);
+    }
 //
 //    // Danh sách khách hàng thân thiết
 //    @GetMapping("/loyal-customers")
