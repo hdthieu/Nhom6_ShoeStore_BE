@@ -9,16 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-//    @Query("SELECT SUM(od.quantity), " +
-//            "SUM(od.quantity * od.price - " +
-//            "CASE " +
-//            "WHEN o.voucher IS NOT NULL AND o.voucher.discountType = 'Percentage' THEN (o.voucher.discountValue / 100 * (od.quantity * od.price)) " +
-//            "WHEN o.voucher IS NOT NULL AND o.voucher.discountType = 'Flat' THEN o.voucher.discountValue " +
-//            "ELSE 0 END) " +
-//            "FROM OrderDetail od JOIN od.order o " +
-//            "WHERE YEAR(o.orderDate) = :year")
-//    List<Object[]> findTotalRevenueAndQuantityByYear(@Param("year") int year);
-//
+    @Query("SELECT COUNT(DISTINCT o.orderID) as totalOrders, " +
+            "SUM(od.quantity) AS totalQuantity, " +
+            "SUM(od.quantity * od.price) AS totalRevenue, " +
+            "o.voucherID " +
+            "FROM OrderDetail od " +
+            "JOIN od.order o " +
+            "WHERE YEAR(o.orderDate) = :year " +
+            "GROUP BY o.voucherID")
+    List<Object[]> findTotalRevenueAndQuantityByYear(@Param("year") int year);
+
+
 //    @Query("SELECT o.user, COUNT(o), SUM(od.quantity * od.price - " +
 //            "CASE " +
 //            "WHEN o.voucher IS NOT NULL AND o.voucher.discountType = 'Percentage' THEN (od.quantity * od.price * o.voucher.discountValue / 100) " +

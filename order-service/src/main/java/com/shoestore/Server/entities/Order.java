@@ -39,9 +39,6 @@ public class Order {
     private int userID;
 
 
-    public Order() {
-    }
-
     public Order(int orderID){
         this.orderID = orderID;
     }

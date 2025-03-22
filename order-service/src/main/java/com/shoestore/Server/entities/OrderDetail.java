@@ -36,8 +36,6 @@ public class OrderDetail {
         this.id = id;
     }
 
-    public OrderDetail() {
-    }
 
     public double getPrice() {
         return price;
