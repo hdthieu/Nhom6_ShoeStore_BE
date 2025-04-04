@@ -1,19 +1,10 @@
-
-# Sử dụng JDK 17 với hình ảnh nhẹ
-FROM openjdk:17-jdk-slim
-
-# Định nghĩa thư mục làm việc
+# Stage 1: Build ứng dụng Java
+FROM maven:3.8.4-openjdk-17 AS builder
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Đặt biến môi trường
-ENV APP_NAME=PRODUCT-SERVICE
-ENV APP_PORT=8081
-
-# Copy file JAR vào container
-COPY target/product-service-0.0.1-SNAPSHOT.jar app.jar
-
-# Mở cổng ứng dụng
-EXPOSE 8081
-
-# Chạy ứng dụng với ENTRYPOINT
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

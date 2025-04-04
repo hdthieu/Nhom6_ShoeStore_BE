@@ -82,6 +82,13 @@ VALUES
 (95.00, 2, 44, 14), -- Adidas Superstar
 (250.00, 4, 45, 15); -- Santoni Double Monk
 
+SELECT COUNT(DISTINCT o.orderID) AS totalOrders, 
+       SUM(od.quantity) AS totalQuantity, 
+       SUM(od.quantity * od.price) AS totalRevenue
+FROM OrderDetail od
+JOIN Orders o ON od.orderID = o.orderID
+WHERE YEAR(o.orderDate) = 2025;
+
 
 --ShoeStore_ProductService
 use ShoeStore_ProductService
@@ -496,3 +503,6 @@ VALUES
 ('2025-03-28', 300.00, 28),
 ('2025-03-29', 250.00, 29),
 ('2025-03-30', 520.00, 30);
+
+
+
