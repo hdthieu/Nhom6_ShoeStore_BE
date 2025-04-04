@@ -1,10 +1,6 @@
-package com.shoestore.Server.dto;
+package com.shoestore.Server.dto.response;
 
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-public class VoucherDTO {
+public class VoucherResponseDTO {
     private Integer id;
     private String discountType; // "Percentage" hoặc "Flat"
     private Double discountValue;

@@ -1,5 +1,6 @@
 package com.shoestore.Server.controller;
 
+import com.shoestore.Server.dto.VoucherResponseDTO;
 import com.shoestore.Server.entities.Voucher;
 import com.shoestore.Server.repositories.VoucherRepository;
 import com.shoestore.Server.service.VoucherService;
@@ -67,7 +68,6 @@ public class VoucherController {
         return ResponseEntity.ok(savedVoucher);
     }
 
-    // Phương thức GET để lấy thông  tin voucher theo ID
     @GetMapping("/{id}")
     public ResponseEntity<Voucher> getVoucherById(@PathVariable int id) {
         Optional<Voucher> voucher = voucherRepository.findById(id);
@@ -100,10 +100,7 @@ public class VoucherController {
             @RequestParam(required = false, defaultValue = "all") String status,
             @RequestParam(required = false, defaultValue = "") String search
     ) {
-        // Lấy danh sách Voucher từ service
         List<Voucher> vouchers;
-
-        // Nếu trạng thái là "all", gọi phương thức getAllVouchers từ service
         if ("all".equals(status)) {
             vouchers = voucherService.getAllVouchers().stream()
                     .filter(v -> v.getName().toLowerCase().contains(search.toLowerCase()))
@@ -111,16 +108,22 @@ public class VoucherController {
         } else {
             vouchers = voucherRepository.findByStatusAndNameContainingIgnoreCase(status, search);
         }
-
-        // Chuẩn bị response trả về cho client
         Map<String, Object> response = new HashMap<>();
         response.put("vouchers", vouchers);
 
         return ResponseEntity.ok(response);
     }
 
-
-
-
-
+    // Dung Cho LoyalCustomer
+    @GetMapping("/voucherloyalcus/{id}")
+    public ResponseEntity<VoucherResponseDTO> getVouForLoyalCus(@PathVariable int id) {
+        Optional<Voucher> voucher = voucherRepository.findById(id);
+        if (voucher.isPresent()) {
+            Voucher v = voucher.get();
+            VoucherResponseDTO vcDTO = new VoucherResponseDTO(v.getVoucherID(), v.getDiscountType(), v.getDiscountValue());
+            return ResponseEntity.ok(vcDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }

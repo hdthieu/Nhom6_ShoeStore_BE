@@ -1,11 +1,13 @@
 package com.shoestore.Server.controller;
 
 import com.shoestore.Server.dto.UserDTO;
+import com.shoestore.Server.dto.UserResponseDTO;
 import com.shoestore.Server.entities.Role;
 import com.shoestore.Server.entities.User;
 import com.shoestore.Server.repositories.RoleRepository;
 import com.shoestore.Server.repositories.UserRepository;
 import com.shoestore.Server.service.UserService;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -223,6 +226,14 @@ public class UserController {
 
         // Trả về người dùng đã được cập nhật
         return ResponseEntity.ok(updated);
+    }
+
+
+    // trả về danh sách các customer để tính loyal customer. (By Hiếu)
+    @GetMapping("/getListCusForLoyal")
+    public ResponseEntity<List<UserResponseDTO>> getListCusForLoyal() {
+        List<UserResponseDTO> users = userRepository.findByRoleName("Customer");
+        return ResponseEntity.ok(users);
     }
 
 }

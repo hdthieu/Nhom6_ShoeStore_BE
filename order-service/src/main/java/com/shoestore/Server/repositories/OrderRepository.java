@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
+    List<Order> findAllByUserID(int userId);
+
     @Query("SELECT COUNT(DISTINCT o.orderID) as totalOrders, " +
             "SUM(od.quantity) AS totalQuantity, " +
             "SUM(od.quantity * od.price) AS totalRevenue, " +
@@ -37,7 +39,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 //            "ELSE 0 END) DESC")
 //    List<Object[]> findLoyalCustomers(@Param("minOrders") int minOrders);
 
+
     long countByStatus(String status);
     List<Order> findByOrderDateBetween(LocalDate startDate, LocalDate endDate);
+
 }
 

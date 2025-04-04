@@ -1,38 +1,38 @@
-﻿
+﻿﻿
 --ShoeStore_OrderService
 use ShoeStore_OrderService
 INSERT INTO Orders (feeShip, orderDate, shippingAddress, status,[userID] , [voucherID],[paymentID])
 VALUES
-    (5.00, '2025-03-01', '123 Le Loi, Hanoi', 'Shipped', 5, 1, 0),
-    (10.00, '2025-03-02', '456 Hoang Hoa Tham, Hanoi', 'Processing', 4, 2, 0),
-    (0.00, '2025-03-03', '789 Nguyen Chi Thanh, Hanoi', 'Delivered', 6, 3, 0),
-    (12.00, '2025-03-04', '12 Hai Ba Trung, Ho Chi Minh', 'Shipped', 4, 1, 0),
-    (15.00, '2025-03-05', '34 Nguyen Hue, Ho Chi Minh', 'Processing', 5, 1, 0),
-    (8.00, '2025-03-06', '56 Tran Phu, Da Nang', 'Shipped', 6, 2, 0),
-    (6.50, '2025-03-07', '78 Dien Bien Phu, Da Nang', 'Delivered', 7, 2, 0),
-    (9.00, '2025-03-08', '90 Vo Van Kiet, Can Tho', 'Processing', 8, 2, 0),
-    (5.00, '2025-03-09', '11 Nguyen Trai, Hai Phong', 'Shipped', 6, 0, 0),
-    (10.00, '2025-03-10', '22 Hai Ba Trung, Hai Phong', 'Delivered', 10, 1, 0),
-    (7.50, '2025-03-11', '33 Nguyen Cong Tru, Hue', 'Processing', 11, 0, 0),
-    (12.00, '2025-03-12', '44 Le Loi, Hue', 'Shipped', 12, 2, 0),
-    (15.00, '2025-03-13', '55 Tran Phu, Nha Trang', 'Processing', 13, 0, 0),
-    (8.00, '2025-03-14', '66 Nguyen Thien Thuat, Nha Trang', 'Delivered', 14, 3, 0),
-    (6.50, '2025-03-15', '77 Tran Hung Dao, Vung Tau', 'Processing', 15, 0, 0),
-    (9.00, '2025-03-16', '88 Nguyen Trai, Vung Tau', 'Shipped', 16, 1, 0),
-    (5.00, '2025-03-17', '99 Le Hong Phong, Da Lat', 'Delivered', 17, 0, 0),
-    (10.00, '2025-03-18', '10 Nguyen Van Cu, Da Lat', 'Processing', 18, 0, 0),
-    (7.50, '2025-03-19', '20 Tran Hung Dao, Quy Nhon', 'Shipped', 19, 1, 0),
-    (12.00, '2025-03-20', '30 Vo Thi Sau, Quy Nhon', 'Delivered', 20, 1, 0),
-    (15.00, '2025-03-21', '123 Le Loi, Hanoi', 'Shipped', 5, 2, 0),
-    (8.00, '2025-03-22', '456 Hoang Hoa Tham, Hanoi', 'Processing', 10, 3, 0),
-    (6.50, '2025-03-23', '789 Nguyen Chi Thanh, Hanoi', 'Delivered', 8, 0, 0),
-    (9.00, '2025-03-24', '12 Hai Ba Trung, Ho Chi Minh', 'Processing', 4, 1, 0),
-    (0.00, '2025-03-25', '34 Nguyen Hue, Ho Chi Minh', 'Delivered', 5, 2, 0),
-    (0.00, '2025-03-26', '56 Tran Phu, Da Nang', 'Shipped', 6, 0, 0),
-    (0.00, '2025-03-27', '78 Dien Bien Phu, Da Nang', 'Processing', 7, 3, 0),
-    (0.00, '2025-03-28', '90 Vo Van Kiet, Can Tho', 'Delivered', 8, 1, 0),
-    (0.00, '2025-03-29', '11 Nguyen Trai, Hai Phong', 'Shipped', 9, 1, 0),
-    (0.00, '2025-03-30', '22 Hai Ba Trung, Hai Phong', 'Processing', 10, 0, 0);
+    (5.00, '2025-04-01', '123 Le Loi, Hanoi', 'Shipped', 5, 1, 0),
+    (10.00, '2025-04-02', '456 Hoang Hoa Tham, Hanoi', 'Processing', 4, 2, 0),
+    (0.00, '2025-04-03', '789 Nguyen Chi Thanh, Hanoi', 'Delivered', 6, 3, 0),
+    (12.00, '2025-04-04', '12 Hai Ba Trung, Ho Chi Minh', 'Shipped', 4, 1, 0),
+    (15.00, '2025-04-05', '34 Nguyen Hue, Ho Chi Minh', 'Processing', 5, 1, 0),
+    (8.00, '2025-04-06', '56 Tran Phu, Da Nang', 'Shipped', 6, 2, 0),
+    (6.50, '2025-04-07', '78 Dien Bien Phu, Da Nang', 'Delivered', 7, 2, 0),
+    (9.00, '2025-04-08', '90 Vo Van Kiet, Can Tho', 'Processing', 8, 2, 0),
+    (5.00, '2025-04-09', '11 Nguyen Trai, Hai Phong', 'Shipped', 6, 0, 0),
+    (10.00, '2025-04-10', '22 Hai Ba Trung, Hai Phong', 'Delivered', 10, 1, 0),
+    (7.50, '2025-04-11', '33 Nguyen Cong Tru, Hue', 'Processing', 11, 0, 0),
+    (12.00, '2025-04-12', '44 Le Loi, Hue', 'Shipped', 12, 2, 0),
+    (15.00, '2025-04-13', '55 Tran Phu, Nha Trang', 'Processing', 13, 0, 0),
+    (8.00, '2025-04-14', '66 Nguyen Thien Thuat, Nha Trang', 'Delivered', 14, 3, 0),
+    (6.50, '2025-04-15', '77 Tran Hung Dao, Vung Tau', 'Processing', 15, 0, 0),
+    (9.00, '2025-04-16', '88 Nguyen Trai, Vung Tau', 'Shipped', 16, 1, 0),
+    (5.00, '2025-04-17', '99 Le Hong Phong, Da Lat', 'Delivered', 17, 0, 0),
+    (10.00, '2025-04-18', '10 Nguyen Van Cu, Da Lat', 'Processing', 18, 0, 0),
+    (7.50, '2025-04-19', '20 Tran Hung Dao, Quy Nhon', 'Shipped', 19, 1, 0),
+    (12.00, '2025-04-20', '30 Vo Thi Sau, Quy Nhon', 'Delivered', 20, 1, 0),
+    (15.00, '2025-04-21', '123 Le Loi, Hanoi', 'Shipped', 5, 2, 0),
+    (8.00, '2025-04-22', '456 Hoang Hoa Tham, Hanoi', 'Processing', 10, 3, 0),
+    (6.50, '2025-04-23', '789 Nguyen Chi Thanh, Hanoi', 'Delivered', 8, 0, 0),
+    (9.00, '2025-04-24', '12 Hai Ba Trung, Ho Chi Minh', 'Processing', 4, 1, 0),
+    (0.00, '2025-04-25', '34 Nguyen Hue, Ho Chi Minh', 'Delivered', 5, 2, 0),
+    (0.00, '2025-04-26', '56 Tran Phu, Da Nang', 'Shipped', 6, 0, 0),
+    (0.00, '2025-04-27', '78 Dien Bien Phu, Da Nang', 'Processing', 7, 3, 0),
+    (0.00, '2025-04-28', '90 Vo Van Kiet, Can Tho', 'Delivered', 8, 1, 0),
+    (0.00, '2025-04-29', '11 Nguyen Trai, Hai Phong', 'Shipped', 9, 1, 0),
+    (0.00, '2025-04-30', '22 Hai Ba Trung, Hai Phong', 'Processing', 10, 0, 0);
 
 INSERT INTO OrderDetail (price, quantity,[productDetail], orderID)
 VALUES
@@ -503,6 +503,3 @@ VALUES
 ('2025-03-28', 300.00, 28),
 ('2025-03-29', 250.00, 29),
 ('2025-03-30', 520.00, 30);
-
-
-
