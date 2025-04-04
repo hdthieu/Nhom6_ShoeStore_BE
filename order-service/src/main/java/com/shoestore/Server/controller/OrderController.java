@@ -2,6 +2,7 @@ package com.shoestore.Server.controller;
 
 
 
+import com.shoestore.Server.dto.response.LoyalCustomerDTO;
 import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,11 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
     @PostMapping("/update-status")
     public ResponseEntity<?> updateOrderStatus(@RequestBody Map<String, Object> payload) {
         System.out.println("Payload received: " + payload);
-
         try {
-            // Kiểm tra và chuyển đổi kiểu dữ liệu
             int orderId;
             Object orderIdObj = payload.get("orderId");
             if (orderIdObj instanceof Integer) {
@@ -79,9 +79,7 @@ public class OrderController {
 
     @GetMapping("/dsachOrders")
     public List<Map<String, Object>> getAllOrders() {
-        // Lấy danh sách đơn hàng với chi tiết sản phẩm đã được tải
         List<Order> orders = orderService.findAll();
-
         return orders.stream()
                 .map(order -> {
                     Map<String, Object> map = new HashMap<>();
@@ -98,28 +96,17 @@ public class OrderController {
         Map<String, Object> data = orderService.getRevenueAndOrdersForCurrentYear();
         return ResponseEntity.ok(data);
     }
-//
-//    // Danh sách khách hàng thân thiết
-//    @GetMapping("/loyal-customers")
-//    public ResponseEntity<List<Map<String, Object>>> getTop10LoyalCustomers(
-//            @RequestParam(value = "minOrders", defaultValue = "3") int minOrders) {
-//        List<Object[]> loyalCustomers = orderService.getTop10LoyalCustomers(minOrders);
-//
-//        List<Map<String, Object>> customers = new ArrayList<>();
-//        for (Object[] customerData : loyalCustomers) {
-//            Map<String, Object> customer = new HashMap<>();
-//            User user = (User) customerData[0];
-//            customer.put("userName", user.getUserName());
-//            customer.put("name", user.getName());
-//            customer.put("phone", user.getPhoneNumber());
-//            customer.put("email", user.getEmail());
-//            customer.put("orderCount", customerData[1]);
-//            customer.put("totalSpent", customerData[2]);
-//            customers.add(customer);
-//        }
-//        return ResponseEntity.ok(customers);
-//    }
 
+    // Danh sách khách hàng thân thiết
+    @GetMapping("/loyal-customers")
+    public ResponseEntity<List<LoyalCustomerDTO>> getLoyalCustomers(
+            @RequestParam(name = "minOrders", defaultValue = "3") int minOrders
+    ) {
+        List<LoyalCustomerDTO> loyalCustomers = orderService.getTop10LoyalCustomers(minOrders);
+        return ResponseEntity.ok(loyalCustomers);
+    }
+
+    // handle status order
     @GetMapping("/OrderStatistics")
     public Map<String, Long> getOrderStatistics() {
         return orderService.getOrderStatistics();

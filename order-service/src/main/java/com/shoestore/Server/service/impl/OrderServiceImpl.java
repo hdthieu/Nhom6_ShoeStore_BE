@@ -1,13 +1,16 @@
 package com.shoestore.Server.service.impl;
 
+import com.shoestore.Server.client.UserClient;
 import com.shoestore.Server.client.VoucherClient;
-import com.shoestore.Server.dto.VoucherDTO;
+import com.shoestore.Server.dto.response.LoyalCustomerDTO;
+import com.shoestore.Server.dto.response.UserResponseDTO;
+import com.shoestore.Server.dto.response.VoucherResponseDTO;
 import com.shoestore.Server.entities.Order;
+import com.shoestore.Server.entities.OrderDetail;
 import com.shoestore.Server.repositories.OrderRepository;
 import com.shoestore.Server.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,12 +21,14 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final VoucherClient voucherClient;
+    private final UserClient userClient;
     @PersistenceContext
     private EntityManager entityManager;
 
-    public OrderServiceImpl(OrderRepository orderRepository, VoucherClient voucherClient) {
+    public OrderServiceImpl(OrderRepository orderRepository, VoucherClient voucherClient, UserClient userClient) {
         this.orderRepository = orderRepository;
         this.voucherClient = voucherClient;
+        this.userClient = userClient;
     }
     public Map<String, Object> getRevenueAndOrdersForCurrentYear() {
         int currentYear = LocalDate.now().getYear();
@@ -44,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
                 double discount = 0;
                 if (voucherId != null) {
                     try {
-                        VoucherDTO voucher = voucherClient.getVoucherById(voucherId);
+                        VoucherResponseDTO voucher = voucherClient.getVoucherById(voucherId);
                         if (voucher != null) {
                             if ("Percentage".equals(voucher.getDiscountType())) {
                                 discount = (voucher.getDiscountValue() / 100) * revenue;
@@ -140,11 +145,51 @@ public class OrderServiceImpl implements OrderService {
 //        return null;
 //    }
 //
-//    @Override
-//    public List<Object[]> getTop10LoyalCustomers(int minOrders) {
-//        List<Object[]> loyalCustomers = orderRepository.findLoyalCustomers(minOrders);
-//        return loyalCustomers.stream().limit(10).collect(Collectors.toList());
-//    }
+@Override
+public List<LoyalCustomerDTO> getTop10LoyalCustomers(int minOrders) {
+    List<UserResponseDTO> customers = userClient.getListCusForLoyal();
+    List<LoyalCustomerDTO> loyalCustomers = new ArrayList<>();
+
+    for (UserResponseDTO user : customers) {
+        // Lấy tất cả đơn hàng của user từ DB
+        List<Order> orders = orderRepository.findAllByUserID(user.getUserID());
+
+        if (orders.size() >= minOrders) {
+            double totalSpent = 0;
+            int totalOrder = orders.size(); // Tính tổng số đơn hàng
+
+            for (Order order : orders) {
+                double orderTotal = 0;
+
+                for (OrderDetail detail : order.getOrderDetails()) {
+                    orderTotal += detail.getQuantity() * detail.getPrice();
+                }
+
+                // Gọi voucher-service nếu có voucher
+                if (order.getVoucherID() != 0) {
+                    VoucherResponseDTO voucher = voucherClient.getVoucherLoyalcusById(order.getVoucherID());
+                    if ("Percentage".equalsIgnoreCase(voucher.getDiscountType())) {
+                        orderTotal -= orderTotal * voucher.getDiscountValue() / 100;
+                    } else if ("Flat".equalsIgnoreCase(voucher.getDiscountType())) {
+                        orderTotal -= voucher.getDiscountValue();
+                    }
+                }
+
+                totalSpent += orderTotal;
+            }
+
+            // Thêm totalOrder vào trong đối tượng LoyalCustomerDTO
+            loyalCustomers.add(new LoyalCustomerDTO(user.getUserID(), user.getName(), totalSpent, totalOrder,user.getEmail()));
+        }
+    }
+
+    // Sắp xếp theo totalSpent giảm dần
+    loyalCustomers.sort(Comparator.comparingDouble(LoyalCustomerDTO::getTotalSpent).reversed());
+
+    return loyalCustomers;
+}
+
+
 
     @Override
     public Map<String, Long> getOrderStatistics() {

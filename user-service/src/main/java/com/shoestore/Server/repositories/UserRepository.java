@@ -1,5 +1,6 @@
 package com.shoestore.Server.repositories;
 
+import com.shoestore.Server.dto.UserResponseDTO;
 import com.shoestore.Server.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +29,8 @@ public interface UserRepository extends JpaRepository<User,Integer> {
             @Param("roleName") String roleName,
             @Param("status") String status
     );
+
+        // Này của hiếu
+    @Query("SELECT new com.shoestore.Server.dto.UserResponseDTO(u.userID, u.name, u.email, u.phoneNumber) FROM User u WHERE u.role.name = :roleName")
+    List<UserResponseDTO> findByRoleName(@Param("roleName") String roleName);
 }
