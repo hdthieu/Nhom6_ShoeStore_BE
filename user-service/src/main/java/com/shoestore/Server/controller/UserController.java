@@ -229,11 +229,18 @@ public class UserController {
     }
 
 
-    // trả về danh sách các customer để tính loyal customer. (By Hiếu)
-    @GetMapping("/getListCusForLoyal")
-    public ResponseEntity<List<UserResponseDTO>> getListCusForLoyal() {
-        List<UserResponseDTO> users = userRepository.findByRoleName("Customer");
+    // trả về danh sách các customer để tính loyal customer, order_detail .
+    @GetMapping("/getListCusCustom")
+    public ResponseEntity<List<UserResponseDTO>> getListCusCustom() {
+        List<UserResponseDTO> users = userService.getUserByRole("Customer");
         return ResponseEntity.ok(users);
     }
+    @GetMapping("/getListCusCustom/{id}")
+    public ResponseEntity<List<UserResponseDTO>> getListCusCustomByID(@PathVariable int id) {
+        List<UserResponseDTO> users = userService.getUserByRoleAndId("Customer", id);
+        return ResponseEntity.ok(users);
+    }
+
+
 
 }

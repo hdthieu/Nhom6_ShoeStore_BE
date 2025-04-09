@@ -1,6 +1,7 @@
 package com.shoestore.Server.service;
 
 import com.shoestore.Server.dto.UserDTO;
+import com.shoestore.Server.dto.UserResponseDTO;
 import com.shoestore.Server.entities.User;
 
 import java.util.List;
@@ -25,4 +26,7 @@ public interface UserService {
     public void saveUser(User user);
     public User findById(int id);
     public User getUserById(int id);
-}
+
+    public List<UserResponseDTO> getUserByRole(String roleName);
+    public List<UserResponseDTO> getUserByRoleAndId(String role, int id);
+ }

@@ -13,7 +13,7 @@ public class UserResponseDTO {
     private int userID;
     private String name;
     private String email;
-    private String phone;
+    private String phoneNumber;
 //    public UserResponseDTO(int userID, String name, String email) {
 //        this.userID = userID;
 //        this.name = name;

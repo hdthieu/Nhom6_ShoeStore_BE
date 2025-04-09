@@ -20,6 +20,4 @@ public class Address {
     @JoinColumn(name = "userID")
     @JsonBackReference
     private User user;
-
-
 }

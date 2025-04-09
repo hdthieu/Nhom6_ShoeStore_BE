@@ -33,15 +33,14 @@ VALUES
     (0.00, '2025-04-28', '90 Vo Van Kiet, Can Tho', 'Delivered', 8, 1, 0),
     (0.00, '2025-04-29', '11 Nguyen Trai, Hai Phong', 'Shipped', 9, 1, 0),
     (0.00, '2025-04-30', '22 Hai Ba Trung, Hai Phong', 'Processing', 10, 0, 0);
-
-INSERT INTO OrderDetail (price, quantity,[productDetail], orderID)
+INSERT INTO OrderDetail (price, quantity, productDetail, orderID)
 VALUES
-(90.00, 2, 1, 1), -- Nike Air Max 270
-(120.00, 1, 2, 2), -- Adidas Harden Vol. 5
-(150.00, 3, 3, 3), -- Timberland Premium
-(80.00, 4, 4, 4), -- Converse Chuck Taylor
-(100.00, 2, 5, 5), -- Clarks Originals
-(110.00, 1, 6, 6), -- Asics Gel-Resolution
+(90000.00, 2, 1, 1), -- Nike Air Max 270
+(120000.00, 1, 2, 2), -- Adidas Harden Vol. 5
+(150000.00, 3, 3, 3), -- Timberland Premium
+(80000.00, 4, 4, 4), -- Converse Chuck Taylor
+(100000.00, 2, 5, 5), -- Clarks Originals
+(110000.00, 1, 6, 6), -- Asics Gel-Resolution
 (75.00, 5, 7, 7), -- Vans Old Skool
 (95.00, 3, 8, 8), -- Brooks Ghost 14
 (50.00, 1, 9, 9), -- Teva Hurricane XLT2
@@ -81,6 +80,7 @@ VALUES
 (170.00, 5, 43, 13), -- Scarpa Zodiac Plus
 (95.00, 2, 44, 14), -- Adidas Superstar
 (250.00, 4, 45, 15); -- Santoni Double Monk
+
 
 SELECT COUNT(DISTINCT o.orderID) AS totalOrders, 
        SUM(od.quantity) AS totalQuantity, 

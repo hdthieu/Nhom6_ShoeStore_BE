@@ -4,10 +4,13 @@ package com.shoestore.Server.controller;
 import com.shoestore.Server.service.OrderDetailService;
 import com.shoestore.Server.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/OrderDetail")
+@RequestMapping("/Order")
 public class OrderDetailController {
 
     @Autowired
@@ -17,7 +20,7 @@ public class OrderDetailController {
     private OrderService orderService;
 //    @Autowired
 //    private ProductService productService;
-//
+
 //    @Autowired
 //    private ProductDetailService productDetailService;
 
@@ -48,12 +51,12 @@ public class OrderDetailController {
 //        return ResponseEntity.ok(products);
 //    }
 //
-//    // API lấy thông tin chi tiết đơn hàng theo orderID
-//    @GetMapping("/layTT/{orderID}")
-//    public ResponseEntity<Map<String, Object>> getOrderDetailByOrderID(@PathVariable Long orderID) {
-//        Map<String, Object> orderDetail = orderDetailService.fetchOrderDetailByOrderID(orderID);
-//        return ResponseEntity.ok(orderDetail);
-//    }
+    // API lấy thông tin chi tiết đơn hàng theo orderID
+    @GetMapping("/OrderDetail/layTT/{orderID}")
+    public ResponseEntity<Map<String, Object>> getOrderDetailByOrderID(@PathVariable int orderID) {
+        Map<String, Object> orderDetail = orderDetailService.fetchOrderDetailByOrderID(orderID);
+        return ResponseEntity.ok(orderDetail);
+    }
 
 //    @PostMapping("/addProductToOrder")
 //    public ResponseEntity<?> addProductToOrder(@RequestBody Map<String, Object> requestData) {
