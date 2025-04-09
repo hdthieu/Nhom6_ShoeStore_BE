@@ -62,24 +62,6 @@ public class ProductDetailController {
         }
     }
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> getProductDetailsByProductId(@PathVariable int id) {
-        List<ProductDetail> productDetails=productDetailService.getByProductId(id);
-        Map<String,Object> response= new HashMap<>();
-        response.put("productDetails",productDetails);
-        return ResponseEntity.ok(response);
-    }
-    @GetMapping("/productDetailId/{id}")
-    public ResponseEntity<ProductDetail> getProductDetailsById(@PathVariable int id) {
-        ProductDetail productDetail=productDetailService.getProductDetailById(id);
-        if (productDetail != null) {
-            return ResponseEntity.ok(productDetail);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
     // chỉ cập nhật soluong
     @PutMapping("/detail/{id}")
     public ResponseEntity<?> updateProductDetail(@PathVariable int id, @Valid @RequestBody ProductDetail productDetail, BindingResult bindingResult) {
@@ -99,6 +81,21 @@ public class ProductDetailController {
         productDetailService.save(productDetail1);
         return ResponseEntity.ok(productDetail1);
     }
-
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Map<String,Object>> getProductDetailsByProductId(@PathVariable int id) {
+//        List<ProductDetail> productDetails=productDetailService.getByProductId(id);
+//        Map<String,Object> response= new HashMap<>();
+//        response.put("productDetails",productDetails);
+//        return ResponseEntity.ok(response);
+//    }
+//    @GetMapping("/productDetailId/{id}")
+//    public ResponseEntity<ProductDetail> getProductDetailsById(@PathVariable int id) {
+//        ProductDetail productDetail=productDetailService.getProductDetailById(id);
+//        if (productDetail != null) {
+//            return ResponseEntity.ok(productDetail);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//    }
 
 }

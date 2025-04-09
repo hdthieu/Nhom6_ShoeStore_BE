@@ -1,6 +1,7 @@
 package com.shoestore.Server.repositories;
 
 import com.shoestore.Server.entities.Order;
+import com.shoestore.Server.entities.OrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findAllByUserID(int userId);
-
+    public Order findByOrderID(int orderID);
     @Query("SELECT COUNT(DISTINCT o.orderID) as totalOrders, " +
             "SUM(od.quantity) AS totalQuantity, " +
             "SUM(od.quantity * od.price) AS totalRevenue, " +
@@ -20,6 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "WHERE YEAR(o.orderDate) = :year " +
             "GROUP BY o.voucherID")
     List<Object[]> findTotalRevenueAndQuantityByYear(@Param("year") int year);
+
 
 
 //    @Query("SELECT o.user, COUNT(o), SUM(od.quantity * od.price - " +

@@ -1,6 +1,8 @@
 package com.shoestore.Server.service.impl;
 
+import com.shoestore.Server.dto.AddressDTO;
 import com.shoestore.Server.dto.UserDTO;
+import com.shoestore.Server.dto.UserResponseDTO;
 import com.shoestore.Server.entities.Role;
 import com.shoestore.Server.entities.User;
 import com.shoestore.Server.repositories.RoleRepository;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 @Service
 public class UserServiceImpl implements UserService {
@@ -153,7 +157,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    @Override
+   @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -161,4 +165,48 @@ public class UserServiceImpl implements UserService {
     public User findUserById(int id) {
         return userRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public List<UserResponseDTO> getUserByRole(String roleName) {
+        List<User> users = userRepository.findUsersWithAddressesByRoleName(roleName);
+        return users.stream()
+                .map(u -> new UserResponseDTO(
+                        u.getUserID(),
+                        u.getName(),
+                        u.getEmail(),
+                        u.getPhoneNumber(),
+                        u.getAddresses().stream()
+                                .map(a -> new AddressDTO(
+                                        a.getAddressID(),
+                                        a.getStreet(),
+                                        a.getCity(),
+                                        a.getWard(),
+                                        a.getDistrict()
+                                ))
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
+    }
+    public List<UserResponseDTO> getUserByRoleAndId(String role, int id) {
+        // Tìm người dùng theo role và id
+        List<User> users = userRepository.findByRoleAndId(role, id);
+        return users.stream()
+                .map(u -> new UserResponseDTO(
+                        u.getUserID(),
+                        u.getName(),
+                        u.getEmail(),
+                        u.getPhoneNumber(),
+                        u.getAddresses().stream() // Lấy danh sách địa chỉ của người dùng
+                                .map(a -> new AddressDTO(
+                                        a.getAddressID(),
+                                        a.getStreet(),
+                                        a.getCity(),
+                                        a.getWard(),
+                                        a.getDistrict()
+                                ))
+                                .collect(Collectors.toList())
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

@@ -1,8 +1,12 @@
 package com.shoestore.Server.dto;
 
-import lombok.Data;
+import lombok.*;
 
 @Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AddressDTO {
     private int addressID;
     private String street;

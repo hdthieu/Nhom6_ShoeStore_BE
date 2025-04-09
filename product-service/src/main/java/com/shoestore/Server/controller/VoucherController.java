@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/vouchers")
+@RequestMapping("/products")
 public class VoucherController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class VoucherController {
     @Autowired
     private VoucherService voucherService;
 
-    @GetMapping("/search")
+    @GetMapping("/voucher/search")
     public ResponseEntity<Map<String, Object>> searchVouchers(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate
@@ -62,13 +62,13 @@ public class VoucherController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/voucher/add")
     public ResponseEntity<Voucher> addVoucher(@Validated @RequestBody Voucher voucherDTO) {
         Voucher savedVoucher = voucherService.addVoucher(voucherDTO);
         return ResponseEntity.ok(savedVoucher);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/voucher/{id}")
     public ResponseEntity<Voucher> getVoucherById(@PathVariable int id) {
         Optional<Voucher> voucher = voucherRepository.findById(id);
         if (voucher.isPresent()) {
@@ -78,7 +78,7 @@ public class VoucherController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/voucher/{id}")
     public ResponseEntity<Voucher> updateVoucher(@PathVariable int id, @RequestBody Voucher voucher) {
         Voucher updatedVoucher = voucherService.updateVoucher(id, voucher);
         if (updatedVoucher != null) {
@@ -88,14 +88,14 @@ public class VoucherController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/voucher/{id}")
     public ResponseEntity<String> deleteVoucher(@PathVariable("id") int id) {
         voucherService.deleteVoucher(id);
         System.out.println("voucher deleted  : ");
         return ResponseEntity.ok("Voucher deleted");
     }
 
-    @GetMapping
+    @GetMapping("/vouchers")
     public ResponseEntity<Map<String, Object>> getVouchers(
             @RequestParam(required = false, defaultValue = "all") String status,
             @RequestParam(required = false, defaultValue = "") String search
@@ -115,7 +115,7 @@ public class VoucherController {
     }
 
     // Dung Cho LoyalCustomer
-    @GetMapping("/voucherloyalcus/{id}")
+    @GetMapping("/voucher/voucherloyalcus/{id}")
     public ResponseEntity<VoucherResponseDTO> getVouForLoyalCus(@PathVariable int id) {
         Optional<Voucher> voucher = voucherRepository.findById(id);
         if (voucher.isPresent()) {

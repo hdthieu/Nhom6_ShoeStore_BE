@@ -1,5 +1,6 @@
 package com.shoestore.Server.repositories;
 
+import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.entities.OrderDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,6 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Integer> {
+    public List<OrderDetail> findByOrder(Order order);
+
+
 
 //    // Tìm OrderDetail theo productID và orderID
 //    Optional<OrderDetail> findByProductProductIDAndOrderOrderID(int productID, int orderID);

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface OrderDetailService {
-    public Map<String, Object> fetchOrderDetailByOrderID(Long orderID);
+    public Map<String, Object> fetchOrderDetailByOrderID(int orderID);
 //    public List<Product> getTopSellingProducts(LocalDate startDate, LocalDate endDate, int limit);
     public void save(OrderDetail orderDetail);
 

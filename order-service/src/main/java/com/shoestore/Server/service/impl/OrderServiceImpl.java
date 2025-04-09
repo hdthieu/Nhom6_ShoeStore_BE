@@ -1,7 +1,7 @@
 package com.shoestore.Server.service.impl;
 
+import com.shoestore.Server.client.ProductClient;
 import com.shoestore.Server.client.UserClient;
-import com.shoestore.Server.client.VoucherClient;
 import com.shoestore.Server.dto.response.LoyalCustomerDTO;
 import com.shoestore.Server.dto.response.UserResponseDTO;
 import com.shoestore.Server.dto.response.VoucherResponseDTO;
@@ -15,20 +15,19 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final VoucherClient voucherClient;
     private final UserClient userClient;
+    private final ProductClient productClient;
     @PersistenceContext
     private EntityManager entityManager;
 
-    public OrderServiceImpl(OrderRepository orderRepository, VoucherClient voucherClient, UserClient userClient) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserClient userClient, ProductClient productClient) {
         this.orderRepository = orderRepository;
-        this.voucherClient = voucherClient;
         this.userClient = userClient;
+        this.productClient = productClient;
     }
     public Map<String, Object> getRevenueAndOrdersForCurrentYear() {
         int currentYear = LocalDate.now().getYear();
@@ -49,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
                 double discount = 0;
                 if (voucherId != null) {
                     try {
-                        VoucherResponseDTO voucher = voucherClient.getVoucherById(voucherId);
+                        VoucherResponseDTO voucher = productClient.getVoucherById(voucherId);
                         if (voucher != null) {
                             if ("Percentage".equals(voucher.getDiscountType())) {
                                 discount = (voucher.getDiscountValue() / 100) * revenue;
@@ -147,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
 //
 @Override
 public List<LoyalCustomerDTO> getTop10LoyalCustomers(int minOrders) {
-    List<UserResponseDTO> customers = userClient.getListCusForLoyal();
+    List<UserResponseDTO> customers = userClient.getListCusCustom();
     List<LoyalCustomerDTO> loyalCustomers = new ArrayList<>();
 
     for (UserResponseDTO user : customers) {
@@ -167,7 +166,7 @@ public List<LoyalCustomerDTO> getTop10LoyalCustomers(int minOrders) {
 
                 // Gọi voucher-service nếu có voucher
                 if (order.getVoucherID() != 0) {
-                    VoucherResponseDTO voucher = voucherClient.getVoucherLoyalcusById(order.getVoucherID());
+                    VoucherResponseDTO voucher = productClient.getVoucherById(order.getVoucherID());
                     if ("Percentage".equalsIgnoreCase(voucher.getDiscountType())) {
                         orderTotal -= orderTotal * voucher.getDiscountValue() / 100;
                     } else if ("Flat".equalsIgnoreCase(voucher.getDiscountType())) {
