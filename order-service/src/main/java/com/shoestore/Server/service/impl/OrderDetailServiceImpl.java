@@ -65,14 +65,22 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             ProductResponseDTO product = productClient.getProductById(d.getProductDetail());
             double subtotal = d.getQuantity() * d.getPrice();
             total += subtotal;
+            System.out.println("Product: " + product);
+            System.out.println("Image URL: " + product.getImgUrl());
 
-            orderDetails.add(Map.of(
-                    "productID", d.getProductDetail(),
-                    "productName", product.getProductName(),
-                    "quantity", d.getQuantity(),
-                    "price", d.getPrice(),
-                    "imgUrl", product.getImgUrl()
-            ));
+            Map<String, Object> detailMap = new HashMap<>();
+            detailMap.put("productID", d.getProductDetail());
+            detailMap.put("productName", product.getProductName());
+            detailMap.put("quantity", d.getQuantity());
+            detailMap.put("price", d.getPrice());
+
+            List<String> imgList = product.getImgUrl();
+            String firstImg = (imgList != null && !imgList.isEmpty()) ? imgList.get(0) : "";
+            detailMap.put("imgUrl", firstImg);
+
+            orderDetails.add(detailMap);
+
+
         }
 
         double discount = 0;
