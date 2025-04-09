@@ -11,19 +11,23 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table
+@Table(name = "payment")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "paymentID")
     private int paymentID;
+
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "orderID")
+    @JoinColumn(name = "orderID") // Khóa ngoại ánh xạ đến Order
     private Order order;
-    private int OrderID;
+
+    @Column(name = "orderID", insertable = false, updatable = false) // Đánh dấu chỉ đọc để tránh lỗi trùng lặp
+    private int orderID;
 
     private LocalDate paymentDate;
     private String status;
-    @OneToOne(mappedBy = "payment",cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL)
     private Receipt receipt;
 }
