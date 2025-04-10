@@ -9,6 +9,9 @@ import com.shoestore.Server.service.ProductService;
 import com.shoestore.Server.service.SupplierService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -202,7 +205,7 @@ public class ProductController {
     }
 
 
-    @DeleteMapping("/del/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable int id) {
         boolean isDeleted = productService.deleteProduct(id);
         if (isDeleted) {
@@ -343,4 +346,36 @@ public class ProductController {
 //        response.put("trendingProducts", trendingProducts);
 //        return ResponseEntity.ok(response);
 //    }
+
+    @GetMapping("/findproducts")
+    public ResponseEntity<Map<String, Object>> findProducts(
+            @RequestParam(required = false) String keyword, // Cho phép null
+            @RequestParam(defaultValue = "0") int page, // Trang mặc định là 0
+            @RequestParam(defaultValue = "5") int size, // Kích thước mặc định là 5
+            @RequestParam(required = false) String sortBy, // Có thể null
+            @RequestParam(required = false) String order) {
+
+        // Giải mã giá trị của keyword, chuyển %20 thành dấu cách (nếu có)
+        if (keyword != null) {
+            keyword = URLDecoder.decode(keyword, StandardCharsets.UTF_8);
+        }
+
+        System.out.println("Keyword: " + keyword);
+
+        // Tạo đối tượng Pageable để phân trang
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Gọi phương thức service để lấy kết quả
+        Page<Product> productPage = productService.findProducts(keyword, sortBy, order, pageable);
+
+        // Chuẩn bị response
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", productPage.getContent());
+        response.put("totalItems", productPage.getTotalElements());
+        response.put("totalPages", productPage.getTotalPages());
+        response.put("currentPage", page);
+
+        return ResponseEntity.ok(response);
+    }
+
 }
