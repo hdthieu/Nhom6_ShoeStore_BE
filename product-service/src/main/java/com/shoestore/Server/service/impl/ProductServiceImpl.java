@@ -1,10 +1,12 @@
 package com.shoestore.Server.service.impl;
 
+import com.shoestore.Server.dto.ProductDTO;
 import com.shoestore.Server.entities.Product;
 import com.shoestore.Server.repositories.ProductRepository;
 import com.shoestore.Server.service.ProductService;
 import com.shoestore.Server.specifications.ProductSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -3,7 +3,6 @@ package com.shoestore.Server.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -19,5 +18,7 @@ public class ProductResponseDTO {
         private long totalQuantity;
         @JsonProperty("imageURL")
         private List<String> imgUrl;
+        private BrandDTO brand;
+        private CategoryDTO category;
 
 }

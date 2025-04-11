@@ -15,6 +15,6 @@ public interface ProductClient {
     @GetMapping("/voucher/{voucherId}")
     VoucherResponseDTO getVoucherById(@PathVariable("voucherId") Integer voucherId);
 
-    @GetMapping("/vouchers/voucherloyalcus/{voucherId}")
+    @GetMapping("/voucher/voucherloyalcus/{voucherId}")
     VoucherResponseDTO getVoucherLoyalcusById(@PathVariable("voucherId") Integer voucherId);
 }

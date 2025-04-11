@@ -19,5 +19,6 @@ public interface UserClient {
     List<UserResponseDTO> getListCusCustomByID(@PathVariable int id) ;
 
     @GetMapping("/users/{id}")
-    List<UserResponseDTO> getUser(@PathVariable int id);
+    UserResponseDTO getUser(@PathVariable int id);
+
 }
