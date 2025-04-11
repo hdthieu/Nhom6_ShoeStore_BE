@@ -36,7 +36,7 @@ public class User {
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    @JsonBackReference
 //    private List<Order> orders;
-        private int orderID;
+//        private int orderID;
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 //    @JsonBackReference
 //    private List<Review> reviews;

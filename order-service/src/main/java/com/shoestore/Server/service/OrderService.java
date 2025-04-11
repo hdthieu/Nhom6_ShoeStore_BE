@@ -4,6 +4,8 @@ package com.shoestore.Server.service;
 import com.shoestore.Server.dto.response.LoyalCustomerDTO;
 import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.entities.OrderDetail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -18,7 +20,7 @@ public interface OrderService {
     public Map<String, Long> getOrderStatistics();
     public void updateOrderStatus(int orderId, String status) ;
     public Order findById(int orderID);
-
+    public Page<Order> findByStatus(String status, Pageable pageable);
 }
 
 

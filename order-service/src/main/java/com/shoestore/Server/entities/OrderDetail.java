@@ -1,5 +1,6 @@
 package com.shoestore.Server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "orderID")
+    @JsonIgnore
     private Order order;
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

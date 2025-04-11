@@ -11,6 +11,8 @@ import com.shoestore.Server.repositories.OrderRepository;
 import com.shoestore.Server.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -93,14 +95,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAll() {
-//        String jpql = """
-//        SELECT o
-//        FROM Order o
-//        JOIN FETCH o.user u
-//        JOIN FETCH o.orderDetails od
-//        JOIN FETCH od.product p
-//        ORDER BY o.orderDate ASC
-//        """;
         String jpql = """
         SELECT o 
         FROM Order o
@@ -188,8 +182,6 @@ public List<LoyalCustomerDTO> getTop10LoyalCustomers(int minOrders) {
     return loyalCustomers;
 }
 
-
-
     @Override
     public Map<String, Long> getOrderStatistics() {
         Map<String, Long> statistics = new HashMap<>();
@@ -198,6 +190,10 @@ public List<LoyalCustomerDTO> getTop10LoyalCustomers(int minOrders) {
         statistics.put("Delivered", orderRepository.countByStatus("Delivered"));
         statistics.put("Return", orderRepository.countByStatus("Return"));
         return statistics;
+    }
+    @Override
+    public Page<Order> findByStatus(String status, Pageable pageable) {
+        return orderRepository.findByStatusIgnoreCase(status, pageable);
     }
 
 

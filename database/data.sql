@@ -1,5 +1,4 @@
-﻿﻿
---ShoeStore_OrderService
+﻿﻿--ShoeStore_OrderService
 use ShoeStore_OrderService
 INSERT INTO Orders (feeShip, orderDate, shippingAddress, status,[userID] , [voucherID],[paymentID])
 VALUES
@@ -11,21 +10,21 @@ VALUES
     (50000.00, '2025-04-06', '56 Tran Phu, Da Nang', 'Shipped', 6, 2, 0),
     (50000.00, '2025-04-07', '78 Dien Bien Phu, Da Nang', 'Delivered', 7, 2, 0),
     (50000.00, '2025-04-08', '90 Vo Van Kiet, Can Tho', 'Processing', 8, 2, 0),
-    (50000.00, '2025-04-09', '11 Nguyen Trai, Hai Phong', 'Shipped', 6, 0, 0),
+    (50000.00, '2025-04-09', '11 Nguyen Trai, Hai Phong', 'Shipped', 6, 1, 0),
     (50000.00, '2025-04-10', '22 Hai Ba Trung, Hai Phong', 'Delivered', 10, 1, 0),
-    (50000.00, '2025-04-11', '33 Nguyen Cong Tru, Hue', 'Processing', 11, 0, 0),
+    (50000.00, '2025-04-11', '33 Nguyen Cong Tru, Hue', 'Processing', 11, 1, 0),
     (50000.00, '2025-04-12', '44 Le Loi, Hue', 'Shipped', 12, 2, 0),
-    (50000.00, '2025-04-13', '55 Tran Phu, Nha Trang', 'Processing', 13, 0, 0),
+    (50000.00, '2025-04-13', '55 Tran Phu, Nha Trang', 'Processing', 13, 1, 0),
     (50000.00, '2025-04-14', '66 Nguyen Thien Thuat, Nha Trang', 'Delivered', 14, 3, 0),
-    (50000.00, '2025-04-15', '77 Tran Hung Dao, Vung Tau', 'Processing', 15, 0, 0),
-    (50000.00, '2025-04-16', '88 Nguyen Trai, Vung Tau', 'Shipped', 16, 1, 0),
-    (50000.00, '2025-04-17', '99 Le Hong Phong, Da Lat', 'Delivered', 17, 0, 0),
-    (50000.00, '2025-04-18', '10 Nguyen Van Cu, Da Lat', 'Processing', 18, 0, 0),
-    (50000.00, '2025-04-19', '20 Tran Hung Dao, Quy Nhon', 'Shipped', 19, 1, 0),
-    (50000.00, '2025-04-20', '30 Vo Thi Sau, Quy Nhon', 'Delivered', 20, 1, 0),
-    (50000.00, '2025-04-21', '123 Le Loi, Hanoi', 'Shipped', 5, 2, 0),
+    (50000.00, '2025-04-15', '77 Tran Hung Dao, Vung Tau', 'Processing', 14, 1, 0),
+    (50000.00, '2025-04-16', '88 Nguyen Trai, Vung Tau', 'Shipped', 4, 1, 0),
+    (50000.00, '2025-04-17', '99 Le Hong Phong, Da Lat', 'Delivered', 5, 1, 0),
+    (50000.00, '2025-04-18', '10 Nguyen Van Cu, Da Lat', 'Processing', 6, 0, 0),
+    (50000.00, '2025-04-19', '20 Tran Hung Dao, Quy Nhon', 'Shipped', 7, 1, 0),
+    (50000.00, '2025-04-20', '30 Vo Thi Sau, Quy Nhon', 'Delivered', 8, 1, 0),
+    (50000.00, '2025-04-21', '123 Le Loi, Hanoi', 'Shipped', 9, 2, 0),
     (50000.00, '2025-04-22', '456 Hoang Hoa Tham, Hanoi', 'Processing', 10, 3, 0),
-    (50000.00, '2025-04-23', '789 Nguyen Chi Thanh, Hanoi', 'Delivered', 8, 0, 0),
+    (50000.00, '2025-04-23', '789 Nguyen Chi Thanh, Hanoi', 'Delivered', 8, 1, 0),
     (50000.00, '2025-04-24', '12 Hai Ba Trung, Ho Chi Minh', 'Processing', 4, 1, 0),
     (50000.00, '2025-04-25', '34 Nguyen Hue, Ho Chi Minh', 'Delivered', 5, 2, 0),
     (50000.00, '2025-04-26', '56 Tran Phu, Da Nang', 'Shipped', 6, 0, 0),
@@ -33,53 +32,7 @@ VALUES
     (50000.00, '2025-04-28', '90 Vo Van Kiet, Can Tho', 'Delivered', 8, 1, 0),
     (50000.00, '2025-04-29', '11 Nguyen Trai, Hai Phong', 'Shipped', 9, 1, 0),
     (50000.00, '2025-04-30', '22 Hai Ba Trung, Hai Phong', 'Processing', 10, 0, 0);
---INSERT INTO OrderDetail (price, quantity, productDetail, orderID)
---VALUES
---(90000.00, 2, 1, 1), -- Nike Air Max 270
---(120000.00, 1, 2, 2), -- Adidas Harden Vol. 5
---(150000.00, 3, 3, 3), -- Timberland Premium
---(80000.00, 4, 4, 4), -- Converse Chuck Taylor
---(100000.00, 2, 5, 5), -- Clarks Originals
---(110000.00, 1, 6, 6), -- Asics Gel-Resolution
---(110000.00, 5, 7, 7), -- Vans Old Skool
---(950000.00, 3, 8, 8), -- Brooks Ghost 14
---(500000.00, 1, 9, 9), -- Teva Hurricane XLT2
---(2000000.00, 2, 10, 10), -- Jimmy Choo Romy 100
---(850000.00, 4, 11, 11), -- New Balance 574
---(1200000.00, 1, 12, 12), -- Under Armour HOVR
---(1300000.00, 2, 13, 13), -- Columbia Bugaboot
---(1000000.00, 5, 14, 14), -- Saucony Endorphin
---(900000.00, 3, 15, 15), -- Sperry Top-Sider
---(750000.00, 1, 16, 16), -- Reebok Floatride
---(550000.00, 2, 17, 17), -- Keds Champion
---(1100000.00, 3, 18, 18), -- Salomon Speedcross
---(600000.00, 1, 19, 19), -- Xero Shoes Z-Trail
---(2500000.00, 4, 20, 20), -- Gucci Ace Sneakers
---(700000.00, 2, 21, 21), -- Skechers Go Walk
---(140000.00, 3, 22, 22), -- Puma Clyde All-Pro
---(1600000.00, 5, 23, 23), -- North Face Vectiv
---(750000.00, 1, 24, 24), -- DC Shoes Trase
---(1300000.00, 2, 25, 25), -- Allen Edmonds Park Ave
---(1150000.00, 4, 26, 26), -- Fila Axilus 2 Energized
---(900000.00, 1, 27, 27), -- Lacoste Carnaby Evo
---(1250000.00, 3, 28, 28), -- Hoka Speedgoat
---(450000.00, 2, 29, 29), -- Merrell Hydro MOC
---(2200000.00, 1, 30, 30), -- Manolo Blahnik BB
---(1000000.00, 2, 31, 1), -- On Cloud 5
---(1500000.00, 5, 32, 2), -- Jordan Retro 1
---(1800000.00, 1, 33, 3), -- Sorel Caribou
---(700000.00, 3, 34, 4), -- Toms Alpargata
---(1900000.00, 4, 35, 5), -- Tods Gommino
---(1300000.00, 2, 36, 6), -- Arcteryx Norvan
---(750000.00, 3, 37, 7), -- Globe Sabre
---(1400000.00, 5, 38, 8), -- Altra Lone Peak
---(500000.00, 2, 39, 9), -- Chaco Z/Cloud
---(8000000.00, 4, 40, 10), -- Christian Louboutin So Kate
---(600000.00, 1, 41, 11), -- Skechers Flex Appeal
---(1300000.00, 3, 42, 12), -- Nike Zoom Freak
---(1700000.00, 5, 43, 13), -- Scarpa Zodiac Plus
---(950000.00, 2, 44, 14), -- Adidas Superstar
---(2500000.00, 4, 45, 15); -- Santoni Double Monk
+
 INSERT INTO OrderDetail (price, quantity, productDetail, orderID)
 VALUES
 (900000.00, 2, 1, 1), -- Nike Air Max 270
@@ -376,24 +329,24 @@ VALUES
 ('Admin', 'Quản trị viên với toàn quyền quản lý'),
 ('Customer', 'Khách hàng sử dụng dịch vụ và mua sản phẩm')
 
-INSERT INTO Users (CI, email, name, password, phoneNumber, status, userName, roleID, [orderID])
+INSERT INTO Users (CI, email, name, password, phoneNumber, status, userName, roleID)
 VALUES
 -- Admins
-('1234567890', 'admin1@example.com', 'Admin User 1', '$2a$10$piYOHuFhF7WWTyziAev08.RtlRcnZuruhfrTrgYWO6phJ4l1XvSBm', '1234567890', 'Active', 'admin1', 1, 1),
-('0987654321', 'admin2@example.com', 'Admin User 2', 'securepassword2', '0987654321', 'Active', 'admin2', 1, 2),
-('1122334455', 'admin3@example.com', 'Admin User 3', 'securepassword3', '1122334455', 'Active', 'admin3', 1, 3),
+('1234567890', 'admin1@example.com', 'Admin User 1', '$2a$10$piYOHuFhF7WWTyziAev08.RtlRcnZuruhfrTrgYWO6phJ4l1XvSBm', '1234567890', 'Active', 'admin1', 1),
+('0987654321', 'admin2@example.com', 'Admin User 2', 'securepassword2', '0987654321', 'Active', 'admin2', 1),
+('1122334455', 'admin3@example.com', 'Admin User 3', 'securepassword3', '1122334455', 'Active', 'admin3', 1),
 -- Customers
-('02233445566', 'customer1@example.com', 'John Doe', '$2a$10$piYOHuFhF7WWTyziAev08.RtlRcnZuruhfrTrgYWO6phJ4l1XvSBm', '2233445566', 'Active', 'johndoe1', 2, 4),
-('03344556677', 'customer2@example.com', 'Jane Smith', 'password456', '3344556677', 'Active', 'janesmith2', 2, 5),
-('04455667788', 'customer3@example.com', 'Alice Johnson', 'password789', '4455667788', 'Active', 'alicejohnson3', 2, 6),
-('05566778899', 'customer4@example.com', 'Bob Brown', 'password101', '5566778899', 'Active', 'bobbrown4', 2, 7),
-('06677889900', 'customer5@example.com', 'Charlie Davis', 'password202', '6677889900', 'Active', 'charliedavis5', 2, 8),
-('07788990011', 'customer6@example.com', 'Diana Prince', 'password303', '7788990011', 'Active', 'dianaprince6', 2, 9),
-('08899001122', 'customer7@example.com', 'Ethan Hunt', 'password404', '8899001122', 'Active', 'ethanhunt7', 2, 10),
-('01819202122', 'customer17@example.com', 'Oscar Isaac', 'password444', '1819202122', 'Active', 'oscarisaac17', 2, 11),
-('01920212223', 'customer18@example.com', 'Peter Parker', 'password555', '1920212223', 'Active', 'peterparker18', 2, 12),
-('02021222324', 'customer19@example.com', 'Quinn Fabray', 'password666', '2021222324', 'Active', 'quinnfabray19', 2, 13),
-('02122232425', 'customer20@example.com', 'Rachel Green', '$2a$10$piYOHuFhF7WWTyziAev08.RtlRcnZuruhfrTrgYWO6phJ4l1XvSBm', '2122232425', 'Active', 'rachelgreen20', 2, 14);
+('02233445566', 'customer1@example.com', 'John Doe', '$2a$10$piYOHuFhF7WWTyziAev08.RtlRcnZuruhfrTrgYWO6phJ4l1XvSBm', '2233445566', 'Active', 'johndoe1', 2),
+('03344556677', 'customer2@example.com', 'Jane Smith', 'password456', '3344556677', 'Active', 'janesmith2', 2),
+('04455667788', 'customer3@example.com', 'Alice Johnson', 'password789', '4455667788', 'Active', 'alicejohnson3', 2),
+('05566778899', 'customer4@example.com', 'Bob Brown', 'password101', '5566778899', 'Active', 'bobbrown4', 2),
+('06677889900', 'customer5@example.com', 'Charlie Davis', 'password202', '6677889900', 'Active', 'charliedavis5', 2),
+('07788990011', 'customer6@example.com', 'Diana Prince', 'password303', '7788990011', 'Active', 'dianaprince6', 2),
+('08899001122', 'customer7@example.com', 'Ethan Hunt', 'password404', '8899001122', 'Active', 'ethanhunt7', 2),
+('01819202122', 'customer17@example.com', 'Oscar Isaac', 'password444', '1819202122', 'Active', 'oscarisaac17', 2),
+('01920212223', 'customer18@example.com', 'Peter Parker', 'password555', '1920212223', 'Active', 'peterparker18', 2),
+('02021222324', 'customer19@example.com', 'Quinn Fabray', 'password666', '2021222324', 'Active', 'quinnfabray19', 2),
+('02122232425', 'customer20@example.com', 'Rachel Green', '$2a$10$piYOHuFhF7WWTyziAev08.RtlRcnZuruhfrTrgYWO6phJ4l1XvSBm', '2122232425', 'Active', 'rachelgreen20', 2);
 
 
 INSERT INTO Address (city, district, street, ward, userID)
