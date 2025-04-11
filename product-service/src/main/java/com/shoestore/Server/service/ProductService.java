@@ -15,7 +15,7 @@ public interface ProductService {
 //    public List<Product> getProductsNotInOrderDetail(int orderID);
 //
 //    //  Home
-//    List<ProductDTO> getTop10BestSellers();
+    List<ProductDTO> getTop10BestSellers();
 //
 //    List<ProductDTO> getTop10NewArrivals();
 //

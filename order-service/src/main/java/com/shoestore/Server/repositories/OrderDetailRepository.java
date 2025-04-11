@@ -44,6 +44,23 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Intege
 //    @Query("SELECT od.productDetail.productDetailID FROM OrderDetail od WHERE od.order.orderID = :orderID")
 //    List<Integer> findProductIDsByOrderID(@Param("orderID") int orderID);
 
+    @Query(value = """
+    SELECT od.productDetail, SUM(od.quantity) AS totalSold
+    FROM OrderDetail od
+    JOIN Orders o ON od.orderID = o.orderID
+    WHERE o.orderDate >= :startDate AND o.orderDate < :endDate
+    GROUP BY od.productDetail
+    ORDER BY totalSold DESC
+    OFFSET :offset ROWS FETCH NEXT :limit ROWS ONLY
+""", nativeQuery = true)
+    List<Object[]> getTopSellingProductsByDate(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("limit") int limit,
+            @Param("offset") int offset
+    );
+
+
 
 }
 

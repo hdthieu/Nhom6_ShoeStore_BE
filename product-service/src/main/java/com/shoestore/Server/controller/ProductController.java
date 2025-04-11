@@ -315,14 +315,14 @@ public class ProductController {
 
 
     // API lấy danh sách Best Sellers
-//    @GetMapping("/best-sellers")
-//    public ResponseEntity<Map<String, Object>> getBestSellers() {
-//        List<ProductDTO> bestSellers = productService.getTop10BestSellers();
-//        System.out.println(bestSellers);
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("bestSellers", bestSellers);
-//        return ResponseEntity.ok(response);
-//    }
+    @GetMapping("/best-sellers")
+    public ResponseEntity<Map<String, Object>> getBestSellers() {
+        List<ProductDTO> bestSellers = productService.getTop10BestSellers();
+        System.out.println(bestSellers);
+        Map<String, Object> response = new HashMap<>();
+        response.put("bestSellers", bestSellers);
+        return ResponseEntity.ok(response);
+    }
 //
 //    // API lấy danh sách New Arrivals
 //    @GetMapping("/new-arrivals")

@@ -4,9 +4,8 @@ package com.shoestore.Server.service.impl;
 import com.shoestore.Server.client.ProductClient;
 import com.shoestore.Server.client.UserClient;
 
+import com.shoestore.Server.dto.response.*;
 import com.shoestore.Server.dto.response.ProductResponseDTO;
-import com.shoestore.Server.dto.response.UserResponseDTO;
-import com.shoestore.Server.dto.response.VoucherResponseDTO;
 import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.entities.OrderDetail;
 //import com.shoestore.Server.entities.Product;
@@ -19,6 +18,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -126,7 +126,59 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     public void save(OrderDetail orderDetail) {
         orderDetailRepository.save(orderDetail);
     }
+    public List<BestSellerDTO> getBestSellers(LocalDate startDate, LocalDate endDate, int page, int size) {
+        // Cộng thêm 1 ngày cho endDate để lấy đến hết ngày được chọn
+        LocalDate adjustedEndDate = endDate.plusDays(1);
+        int offset = page * size;
 
+        List<Object[]> topSellers = orderDetailRepository.getTopSellingProductsByDate(startDate, adjustedEndDate, size, offset);
+        List<BestSellerDTO> result = new ArrayList<>();
+
+        for (Object[] row : topSellers) {
+            int productID = ((Number) row[0]).intValue();
+            long totalSold = ((Number) row[1]).longValue();
+
+            ProductResponseDTO product = productClient.getProductById(productID);
+            if (product != null) {
+                result.add(new BestSellerDTO(
+                        productID,
+                        totalSold,
+                        product.getProductName(),
+                        product.getBrand().getName(),
+                        product.getCategory().getName()
+                ));
+            }
+        }
+
+        return result;
+    }
+
+
+//    @Override
+//    public List<BestSellerDTO> getBestSellers(int page, int size) {
+//        int offset = page * size;
+//        List<Object[]> topSellers = orderDetailRepository.getTopSellingProducts(size, offset);
+//        List<BestSellerDTO> result = new ArrayList<>();
+//
+//        for (Object[] row : topSellers) {
+//            int productID = ((Number) row[0]).intValue();
+//            long totalSold = ((Number) row[1]).longValue();
+//
+//            ProductResponseDTO product = productClient.getProductById(productID);
+//
+//            if (product != null) {
+//                result.add(new BestSellerDTO(
+//                        productID,
+//                        totalSold,
+//                        product.getProductName(),
+//                        product.getBrand().getName(),
+//                        product.getCategory().getName()
+//                ));
+//            }
+//        }
+//
+//        return result;
+//    }
 //    @Override
 //    public List<OrderDetail> findByProductIDAndOrderID(int productID, int orderID) {
 //        return orderDetailRepository.findByProductIDAndOrderID(productID, orderID);

@@ -11,8 +11,6 @@ import lombok.*;
 @Table
 @Data
 public class OrderDetail {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

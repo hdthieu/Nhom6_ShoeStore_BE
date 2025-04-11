@@ -18,7 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "o.voucherID " +
             "FROM OrderDetail od " +
             "JOIN od.order o " +
-            "WHERE YEAR(o.orderDate) = :year " +
+            "WHERE YEAR(o.orderDate) = :year AND o.voucherID > 0 " +
             "GROUP BY o.voucherID")
     List<Object[]> findTotalRevenueAndQuantityByYear(@Param("year") int year);
 

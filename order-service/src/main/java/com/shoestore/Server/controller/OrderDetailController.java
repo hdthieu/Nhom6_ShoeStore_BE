@@ -1,12 +1,16 @@
 package com.shoestore.Server.controller;
 
 
+import com.shoestore.Server.dto.response.BestSellerDTO;
 import com.shoestore.Server.service.OrderDetailService;
 import com.shoestore.Server.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -57,6 +61,40 @@ public class OrderDetailController {
         Map<String, Object> orderDetail = orderDetailService.fetchOrderDetailByOrderID(orderID);
         return ResponseEntity.ok(orderDetail);
     }
+    @GetMapping("/bestsellers")
+    public ResponseEntity<List<BestSellerDTO>> getBestSellers(
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        if (type != null) {
+            LocalDate now = LocalDate.now();
+            switch (type) {
+                case "day" -> {
+                    startDate = now;
+                    endDate = now;
+                }
+                case "week" -> {
+                    startDate = now.minusDays(6);
+                    endDate = now;
+                }
+                case "month" -> {
+                    startDate = now.withDayOfMonth(1);
+                    endDate = now;
+                }
+                case "year" -> {
+                    startDate = now.withDayOfYear(1);
+                    endDate = now;
+                }
+            }
+        }
+
+        List<BestSellerDTO> bestSellers = orderDetailService.getBestSellers(startDate, endDate, page, size);
+        return ResponseEntity.ok(bestSellers);
+    }
+
 
 //    @PostMapping("/addProductToOrder")
 //    public ResponseEntity<?> addProductToOrder(@RequestBody Map<String, Object> requestData) {
