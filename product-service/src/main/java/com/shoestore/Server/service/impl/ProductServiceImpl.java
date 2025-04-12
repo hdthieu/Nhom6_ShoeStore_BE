@@ -1,10 +1,15 @@
 package com.shoestore.Server.service.impl;
 
+import com.shoestore.Server.dto.ProductDTO;
 import com.shoestore.Server.entities.Product;
 import com.shoestore.Server.repositories.ProductRepository;
 import com.shoestore.Server.service.ProductService;
 import com.shoestore.Server.specifications.ProductSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -91,7 +96,37 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(spec);
     }
 
+    @Override
+    public Page<Product> findProducts(String keyword, String sortBy, String order, Pageable pageable) {
+        Pageable sortedPageable;
 
+        // Kiểm tra nếu `sortBy` và `order` đều không null
+        if (sortBy != null && order != null) {
+            // Xác định hướng sắp xếp
+            Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+            // Xác định trường cần sắp xếp
+            String sortField;
+            if ("price".equalsIgnoreCase(sortBy)) {
+                sortField = "price";
+            } else {
+                sortField = "createDate"; // Mặc định là sắp xếp theo createDate
+            }
+
+            // Tạo Pageable với thông tin sắp xếp
+            sortedPageable = PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    Sort.by(direction, sortField)
+            );
+        } else {
+            // Nếu không có thông tin sắp xếp, dùng Pageable mặc định
+            sortedPageable = pageable;
+        }
+
+        // Gọi repository với Pageable được điều chỉnh
+        return productRepository.findProducts(keyword, sortedPageable);
+    }
 
     // nay cua hieu
 //    public List<Product> getProductsNotInOrderDetail(int orderID) {

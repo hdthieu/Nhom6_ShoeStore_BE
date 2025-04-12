@@ -2,6 +2,8 @@ package com.shoestore.Server.repositories;
 
 import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.entities.OrderDetail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +20,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
             "o.voucherID " +
             "FROM OrderDetail od " +
             "JOIN od.order o " +
-            "WHERE YEAR(o.orderDate) = :year " +
+            "WHERE YEAR(o.orderDate) = :year AND o.voucherID > 0 " +
             "GROUP BY o.voucherID")
     List<Object[]> findTotalRevenueAndQuantityByYear(@Param("year") int year);
 
@@ -44,6 +46,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     long countByStatus(String status);
     List<Order> findByOrderDateBetween(LocalDate startDate, LocalDate endDate);
+    Page<Order> findByStatusIgnoreCase(String status, Pageable pageable);
 
 }
 

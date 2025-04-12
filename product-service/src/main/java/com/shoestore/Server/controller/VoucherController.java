@@ -32,7 +32,7 @@ public class VoucherController {
     private VoucherService voucherService;
 
     @GetMapping("/voucher/search")
-    public ResponseEntity<Map<String, Object>> searchVouchers(
+    public ResponseEntity<List<Voucher>> searchVouchers(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate
     ) {
@@ -40,27 +40,20 @@ public class VoucherController {
         LocalDate end = null;
         try {
             if (startDate != null && !startDate.isEmpty()) {
-                start = LocalDate.parse(startDate);  // Chuyển đổi startDate
+                start = LocalDate.parse(startDate);
             }
             if (endDate != null && !endDate.isEmpty()) {
-                end = LocalDate.parse(endDate);  // Chuyển đổi endDate
+                end = LocalDate.parse(endDate);
             }
         } catch (Exception e) {
             System.out.println("Lỗi khi chuyển đổi ngày: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Ngày không hợp lệ"));
+            return ResponseEntity.badRequest().build();
         }
+
         List<Voucher> vouchers = voucherService.findVoucherByCodeOrDate(start, end);
-
-        if (vouchers.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(Map.of("message", "Không có voucher nào trong khoảng thời gian này"));
-        }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("vouchers", vouchers);
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(vouchers);
     }
+
 
     @PostMapping("/voucher/add")
     public ResponseEntity<Voucher> addVoucher(@Validated @RequestBody Voucher voucherDTO) {
@@ -95,7 +88,7 @@ public class VoucherController {
         return ResponseEntity.ok("Voucher deleted");
     }
 
-    @GetMapping("/vouchers")
+    @GetMapping("/voucher")
     public ResponseEntity<Map<String, Object>> getVouchers(
             @RequestParam(required = false, defaultValue = "all") String status,
             @RequestParam(required = false, defaultValue = "") String search
