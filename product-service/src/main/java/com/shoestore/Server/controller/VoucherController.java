@@ -1,5 +1,6 @@
 package com.shoestore.Server.controller;
 
+import com.shoestore.Server.dto.VoucherResponseDTO;
 import com.shoestore.Server.entities.Voucher;
 import com.shoestore.Server.repositories.VoucherRepository;
 import com.shoestore.Server.service.VoucherService;
@@ -21,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/vouchers")
+@RequestMapping("/products")
 public class VoucherController {
 
     @Autowired
@@ -30,7 +31,7 @@ public class VoucherController {
     @Autowired
     private VoucherService voucherService;
 
-    @GetMapping("/search")
+    @GetMapping("/voucher/search")
     public ResponseEntity<Map<String, Object>> searchVouchers(
             @RequestParam(required = false) String startDate,
             @RequestParam(required = false) String endDate
@@ -61,14 +62,13 @@ public class VoucherController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/voucher/add")
     public ResponseEntity<Voucher> addVoucher(@Validated @RequestBody Voucher voucherDTO) {
         Voucher savedVoucher = voucherService.addVoucher(voucherDTO);
         return ResponseEntity.ok(savedVoucher);
     }
 
-    // Phương thức GET để lấy thông  tin voucher theo ID
-    @GetMapping("/{id}")
+    @GetMapping("/voucher/{id}")
     public ResponseEntity<Voucher> getVoucherById(@PathVariable int id) {
         Optional<Voucher> voucher = voucherRepository.findById(id);
         if (voucher.isPresent()) {
@@ -78,7 +78,7 @@ public class VoucherController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/voucher/{id}")
     public ResponseEntity<Voucher> updateVoucher(@PathVariable int id, @RequestBody Voucher voucher) {
         Voucher updatedVoucher = voucherService.updateVoucher(id, voucher);
         if (updatedVoucher != null) {
@@ -88,22 +88,19 @@ public class VoucherController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/voucher/{id}")
     public ResponseEntity<String> deleteVoucher(@PathVariable("id") int id) {
         voucherService.deleteVoucher(id);
         System.out.println("voucher deleted  : ");
         return ResponseEntity.ok("Voucher deleted");
     }
 
-    @GetMapping
+    @GetMapping("/vouchers")
     public ResponseEntity<Map<String, Object>> getVouchers(
             @RequestParam(required = false, defaultValue = "all") String status,
             @RequestParam(required = false, defaultValue = "") String search
     ) {
-        // Lấy danh sách Voucher từ service
         List<Voucher> vouchers;
-
-        // Nếu trạng thái là "all", gọi phương thức getAllVouchers từ service
         if ("all".equals(status)) {
             vouchers = voucherService.getAllVouchers().stream()
                     .filter(v -> v.getName().toLowerCase().contains(search.toLowerCase()))
@@ -111,16 +108,22 @@ public class VoucherController {
         } else {
             vouchers = voucherRepository.findByStatusAndNameContainingIgnoreCase(status, search);
         }
-
-        // Chuẩn bị response trả về cho client
         Map<String, Object> response = new HashMap<>();
         response.put("vouchers", vouchers);
 
         return ResponseEntity.ok(response);
     }
 
-
-
-
-
+    // Dung Cho LoyalCustomer
+    @GetMapping("/voucher/voucherloyalcus/{id}")
+    public ResponseEntity<VoucherResponseDTO> getVouForLoyalCus(@PathVariable int id) {
+        Optional<Voucher> voucher = voucherRepository.findById(id);
+        if (voucher.isPresent()) {
+            Voucher v = voucher.get();
+            VoucherResponseDTO vcDTO = new VoucherResponseDTO(v.getVoucherID(), v.getDiscountType(), v.getDiscountValue());
+            return ResponseEntity.ok(vcDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }

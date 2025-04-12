@@ -12,6 +12,7 @@ import lombok.*;
 @Data
 public class OrderDetail {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,4 +27,29 @@ public class OrderDetail {
     private int productDetail;
     private int quantity;
     private double price;
+
+    public OrderDetail(double price, int quantity, int productDetail, Order order, Long id) {
+        this.price = price;
+        this.quantity = quantity;
+        this.productDetail = productDetail;
+        this.order = order;
+        this.id = id;
+    }
+
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

@@ -1,5 +1,6 @@
 package com.shoestore.Server.controller;
 
+import com.shoestore.Server.dto.CategoryDTO;
 import com.shoestore.Server.entities.Category;
 import com.shoestore.Server.entities.Product;
 import com.shoestore.Server.service.CategoryService;
@@ -20,12 +21,24 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
-    @GetMapping("/count") // Ánh xạ HTTP GET
-    public ResponseEntity<Map<String,Object>> getAllCategoryWithCount(){
-        List<Object[]> categories=categoryService.getCategoryWithCount();
-        System.out.println(categories);
-        Map<String,Object> response= new HashMap<>();
-        response.put("categories",categories);
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping("/count") // Ánh xạ HTTP GET
+//    public ResponseEntity<Map<String,Object>> getAllCategoryWithCount(){
+//        List<Object[]> categories=categoryService.getCategoryWithCount();
+//        System.out.println(categories);
+//        Map<String,Object> response= new HashMap<>();
+//        response.put("categories",categories);
+//        return ResponseEntity.ok(response);
+//    }
+//}
+//    hung sua ơ day
+@GetMapping("/count")
+public ResponseEntity<?> getProductCountByCategory() {
+    return ResponseEntity.ok(Map.of(
+            "categories", List.of(
+                    List.of(1, "Tên Category", "Mô tả", 10),
+                    List.of(2, "Tên khác", "Mô tả khác", 15)
+            )
+    ));
+}
+
 }
