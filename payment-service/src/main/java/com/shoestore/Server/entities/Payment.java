@@ -6,24 +6,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@Table
+@Table(name = "Payment")
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "paymentID")
-    private int paymentID;
-    //    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "orderID")
-//    private Order order;
-    private int OrderID;
+    private Integer paymentID;
 
     private LocalDate paymentDate;
     private String status;
-    @OneToOne(mappedBy = "payment",cascade = CascadeType.ALL)
-    private Receipt receipt;
+    private Integer orderID;
+    @OneToMany(mappedBy = "payment")
+    private List<Receipt> receipts;
+
+    // Getter, Setter
 }

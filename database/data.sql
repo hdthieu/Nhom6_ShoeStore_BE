@@ -298,6 +298,14 @@ VALUES
 (48, '../images/product48.png'),
 (49, '../images/product49.png'),
 (50, '../images/product50.png');
+UPDATE Product_ImageURL
+SET imageURL = 'product' + CAST(productID AS VARCHAR) + '_1.png'
+WHERE imageURL = 'product' + CAST(productID AS VARCHAR);
+UPDATE Product_ImageURL SET imageURL = 'product1_1.png' WHERE productID = 1;
+UPDATE Product_ImageURL
+SET imageURL = 'product1_1.png'
+WHERE imageURL = 'product1 1.png';
+
 INSERT INTO Review (contents, createDate, start, productID, userID)
 VALUES
 ('Great quality!', '2025-03-01', 5, 1, 4),
