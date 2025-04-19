@@ -196,6 +196,13 @@ public List<LoyalCustomerDTO> getTop10LoyalCustomers(int minOrders) {
         return orderRepository.findByStatusIgnoreCase(status, pageable);
     }
 
+    @Override
+    public List<Order> getOrdersByUserId(Integer userId) {
+        return orderRepository.findByUserID(userId);
+    }
 
-
+    @Override
+    public Order addOrder(Order order) {
+        return orderRepository.save(order);
+    }
 }

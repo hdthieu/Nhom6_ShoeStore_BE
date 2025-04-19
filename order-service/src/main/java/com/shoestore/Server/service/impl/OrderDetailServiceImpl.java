@@ -194,4 +194,17 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 //    public void deleteByProductIDAndOrderID(int productID, int orderID) {
 //        orderDetailRepository.deleteByProductProductIDAndOrderOrderID(productID, orderID);
 //    }
+@Override
+public OrderDetail addOrderDetail(OrderDetailResponeDTO dto) {
+    Order order = orderRepository.findById((int) dto.getOrderID())
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+    OrderDetail orderDetail = new OrderDetail();
+    orderDetail.setOrder(order);
+    orderDetail.setProductDetail(dto.getProductDetail());
+    orderDetail.setPrice(dto.getPrice());
+    orderDetail.setQuantity(dto.getQuantity());
+
+    return orderDetailRepository.save(orderDetail);
+}
 }

@@ -36,7 +36,7 @@ public class Order {
 //    @ManyToOne
 //    @JoinColumn(name = "userID")
 //    private User user;
-
+@JoinColumn(name = "userID")
     private int userID;
 
 

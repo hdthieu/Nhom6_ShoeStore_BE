@@ -32,7 +32,10 @@ public class OrderController {
     private UserService userService;
     @Autowired
     private OrderService orderService;
-
+    @PostMapping("/create")
+    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(order));
+    }
     @PostMapping("/update-status")
     public ResponseEntity<?> updateOrderStatus(@RequestBody Map<String, Object> payload) {
         System.out.println("Payload received: " + payload);
@@ -156,7 +159,10 @@ public class OrderController {
         Page<OrderDTO> result = new PageImpl<>(dtos, pageable, orderPage.getTotalElements());
         return ResponseEntity.ok(result);
     }
-
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Integer userId) {
+        return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
+    }
 
 
 

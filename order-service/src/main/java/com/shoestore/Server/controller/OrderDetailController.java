@@ -1,7 +1,13 @@
 package com.shoestore.Server.controller;
 
-
+import com.shoestore.Server.client.ProductClient;
 import com.shoestore.Server.dto.response.BestSellerDTO;
+import com.shoestore.Server.dto.response.ProductResponseDTO;
+import com.shoestore.Server.entities.Order;
+import com.shoestore.Server.entities.OrderDetail;
+import com.shoestore.Server.repositories.OrderDetailRepository;
+import com.shoestore.Server.repositories.OrderRepository;
+import com.shoestore.Server.request.OrderDetailRequestDTO;
 import com.shoestore.Server.service.OrderDetailService;
 import com.shoestore.Server.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,45 +28,22 @@ public class OrderDetailController {
 
     @Autowired
     private OrderService orderService;
-//    @Autowired
-//    private ProductService productService;
 
-//    @Autowired
-//    private ProductDetailService productDetailService;
+    @Autowired
+    private OrderRepository orderRepository;
 
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
 
-//    @GetMapping("/top-selling")
-//    public ResponseEntity<List<Product>> getTopSellingProducts(
-//            @RequestParam String type,
-//            @RequestParam(required = false, defaultValue = "5") int limit) {
-//        LocalDate startDate;
-//        LocalDate endDate = LocalDate.now();
-//        switch (type) {
-//            case "day":
-//                startDate = endDate.minusDays(1);
-//                break;
-//            case "week":
-//                startDate = endDate.minusWeeks(1);
-//                break;
-//            case "month":
-//                startDate = endDate.minusMonths(1);
-//                break;
-//            case "year":
-//                startDate = endDate.minusYears(1);
-//                break;
-//            default:
-//                throw new IllegalArgumentException("Invalid type: " + type);
-//        }
-//        List<Product> products = orderDetailService.getTopSellingProducts(startDate, endDate, limit);
-//        return ResponseEntity.ok(products);
-//    }
-//
-    // API lấy thông tin chi tiết đơn hàng theo orderID
+    @Autowired
+    private ProductClient productClient;
+
     @GetMapping("/OrderDetail/layTT/{orderID}")
     public ResponseEntity<Map<String, Object>> getOrderDetailByOrderID(@PathVariable int orderID) {
         Map<String, Object> orderDetail = orderDetailService.fetchOrderDetailByOrderID(orderID);
         return ResponseEntity.ok(orderDetail);
     }
+
     @GetMapping("/bestsellers")
     public ResponseEntity<List<BestSellerDTO>> getBestSellers(
             @RequestParam(required = false) String type,
@@ -95,33 +78,28 @@ public class OrderDetailController {
         return ResponseEntity.ok(bestSellers);
     }
 
+    @PostMapping("/OrderDetail/add")
+    public ResponseEntity<?> addOrderDetail(@RequestBody OrderDetailRequestDTO dto) {
+        try {
+            Order order = orderRepository.findById(dto.getOrderId())
+                    .orElseThrow(() -> new RuntimeException("Order not found with ID: " + dto.getOrderId()));
 
-//    @PostMapping("/addProductToOrder")
-//    public ResponseEntity<?> addProductToOrder(@RequestBody Map<String, Object> requestData) {
-//        try {
-//            int orderID = Integer.parseInt(requestData.get("orderID").toString());
-//            int productID = Integer.parseInt(requestData.get("productID").toString());
-//            int quantity = Integer.parseInt(requestData.get("quantity").toString());
-//            double price = Double.parseDouble(requestData.get("price").toString());
-//
-//            // Lấy thông tin sản phẩm
-//            List<Product> products = productService.getById(productID);
-//            if (products == null || products.isEmpty()) {
-//                Map<String, Object> response = new HashMap<>();
-//                response.put("message", "Sản phẩm không tồn tại.");
-//                response.put("success", false);
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-//            }
-//
-//            Product product = products.get(0);
-//
-//            // Lấy danh sách ProductDetail liên quan đến sản phẩm
-//            List<ProductDetail> productDetails = product.getProductDetails();
-//            if (productDetails == null || productDetails.isEmpty()) {
-//                Map<String, Object> response = new HashMap<>();
-//                response.put("message", "Không tìm thấy thông tin chi tiết sản phẩm.");
-//                response.put("success", false);
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-//            }
-//
+            // Kiểm tra productDetailId có tồn tại không thông qua product-service
+            ProductResponseDTO productResponseDTO = productClient.getProductById(dto.getProductDetailId());
+            if (productResponseDTO == null) {
+                throw new RuntimeException("Product detail not found with ID: " + dto.getProductDetailId());
+            }
+
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+            orderDetail.setProductDetail(dto.getProductDetailId()); // Gán ID trực tiếp
+            orderDetail.setQuantity(dto.getQuantity());
+            orderDetail.setPrice(dto.getPrice());
+
+            orderDetailRepository.save(orderDetail);
+            return ResponseEntity.ok("Added successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed: " + e.getMessage());
+        }
+    }
 }
