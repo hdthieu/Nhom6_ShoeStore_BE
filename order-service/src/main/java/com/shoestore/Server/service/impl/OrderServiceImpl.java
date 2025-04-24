@@ -2,27 +2,32 @@ package com.shoestore.Server.service.impl;
 
 import com.shoestore.Server.client.ProductClient;
 import com.shoestore.Server.client.UserClient;
-import com.shoestore.Server.dto.response.LoyalCustomerDTO;
-import com.shoestore.Server.dto.response.UserResponseDTO;
-import com.shoestore.Server.dto.response.VoucherResponseDTO;
+import com.shoestore.Server.config.RabbitMQConfig;
+import com.shoestore.Server.dto.OrderReturnedEvent;
+import com.shoestore.Server.dto.response.*;
 import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.entities.OrderDetail;
 import com.shoestore.Server.repositories.OrderRepository;
 import com.shoestore.Server.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserClient userClient;
     private final ProductClient productClient;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -74,19 +79,64 @@ public class OrderServiceImpl implements OrderService {
         return data;
     }
 
-
     public void updateOrderStatus(int orderId, String status) {
-        // Tìm đơn hàng theo ID
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isEmpty()) {
-            throw new IllegalArgumentException("Không tìm thấy đơn hàng với ID: " + orderId);
+            throw new IllegalArgumentException("Không tìm thấy đơn hàng.");
         }
 
-        // Cập nhật trạng thái
         Order order = optionalOrder.get();
         order.setStatus(status);
         orderRepository.save(order);
+
+        // Nếu trạng thái là "Return", gửi sự kiện trả lại
+        if ("Return".equalsIgnoreCase(status)) {
+            OrderReturnedEvent event = new OrderReturnedEvent();
+            event.setOrderId(orderId);
+
+            List<OrderReturnedEvent.ProductQuantity> items = order.getOrderDetails().stream()
+                    .map(detail -> {
+                        OrderReturnedEvent.ProductQuantity pq = new OrderReturnedEvent.ProductQuantity();
+                        pq.setProductId(detail.getProductDetail()); // Set product ID
+                        pq.setQuantity(detail.getQuantity()); // Set quantity
+
+                        // Lấy thông tin sản phẩm từ productClient
+                        ProductResponseDTO product = productClient.getProductById(detail.getProductDetail()); // Lấy thông tin sản phẩm
+
+                        // Lấy danh sách ProductDetailDTO từ ProductResponseDTO
+                        List<ProductDetailDTO> productDetails = product.getProductDetails(); // Lấy danh sách ProductDetail
+
+                        // Lặp qua ProductDetailDTO để lấy màu sắc và kích thước
+                        for (ProductDetailDTO productDetail : productDetails) {
+                            // Thêm màu sắc và kích thước vào ProductQuantity
+                            pq.setColor(productDetail.getColor()); // Set color
+                            pq.setSize(productDetail.getSize());   // Set size
+                        }
+
+                        return pq;
+                    }).collect(Collectors.toList());
+
+            event.setItems(items);
+
+            // Gửi sự kiện trả lại đơn hàng qua RabbitMQ
+            System.out.println("check RabbitMQ for orderId: " + orderId);
+            System.out.println("Sending order returned event to RabbitMQ for orderId: " + orderId);
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, event);
+        }
     }
+
+//    public void updateOrderStatus(int orderId, String status) {
+//        // Tìm đơn hàng theo ID
+//        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+//        if (optionalOrder.isEmpty()) {
+//            throw new IllegalArgumentException("Không tìm thấy đơn hàng với ID: " + orderId);
+//        }
+//
+//        // Cập nhật trạng thái
+//        Order order = optionalOrder.get();
+//        order.setStatus(status);
+//        orderRepository.save(order);
+//    }
 
     @Override
     public Order findById(int orderID) {

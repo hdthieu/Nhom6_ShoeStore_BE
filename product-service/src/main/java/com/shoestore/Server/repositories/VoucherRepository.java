@@ -12,6 +12,7 @@ import java.util.List;
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
     List<Voucher> findByNameContainingIgnoreCase(String name);
     List<Voucher> findByStatusAndNameContainingIgnoreCase(String status, String name);
-    List<Voucher> findByStartDateBeforeAndEndDateAfter(LocalDate startDate, LocalDate endDate);
+    List<Voucher> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(LocalDate start, LocalDate end);
+
 }
 

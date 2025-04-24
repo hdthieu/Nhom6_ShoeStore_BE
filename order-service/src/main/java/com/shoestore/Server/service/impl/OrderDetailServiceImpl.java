@@ -41,8 +41,11 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 
     public Map<String, Object> fetchOrderDetailByOrderID(int orderID) {
+        // Lấy thông tin đơn hàng
         Order order = orderRepository.findByOrderID(orderID);
         List<OrderDetail> details = orderDetailRepository.findByOrder(order);
+
+        // Lấy thông tin người dùng
         Map<String, String> user = new HashMap<>();
         List<UserResponseDTO> userResponseList = userClient.getListCusCustomByID(order.getUserID());
         if (!userResponseList.isEmpty()) {
@@ -51,6 +54,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             user.put("email", userResponse.getEmail());
             user.put("phoneNumber", userResponse.getPhoneNumber());
         }
+
+        // Lấy thông tin voucher
         Map<String, Object> voucher = null;
         if (order.getVoucherID() != 0) {
             VoucherResponseDTO voucherResponse = productClient.getVoucherById(order.getVoucherID());
@@ -59,30 +64,49 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             voucher.put("discountValue", voucherResponse.getDiscountValue());
             voucher.put("discountType", voucherResponse.getDiscountType());
         }
+
+        // Tính toán tổng giá trị đơn hàng
         double total = 0;
         List<Map<String, Object>> orderDetails = new ArrayList<>();
         for (OrderDetail d : details) {
             ProductResponseDTO product = productClient.getProductById(d.getProductDetail());
             double subtotal = d.getQuantity() * d.getPrice();
             total += subtotal;
-            System.out.println("Product: " + product);
-            System.out.println("Image URL: " + product.getImgUrl());
 
-            Map<String, Object> detailMap = new HashMap<>();
-            detailMap.put("productID", d.getProductDetail());
-            detailMap.put("productName", product.getProductName());
-            detailMap.put("quantity", d.getQuantity());
-            detailMap.put("price", d.getPrice());
+            // Lấy danh sách productDetails để lấy màu sắc và kích thước
+            List<ProductDetailDTO> productDetails = product.getProductDetails();
 
-            List<String> imgList = product.getImgUrl();
-            String firstImg = (imgList != null && !imgList.isEmpty()) ? imgList.get(0) : "";
-            detailMap.put("imgUrl", firstImg);
+            // Thêm thông tin chi tiết sản phẩm vào detailMap
+            for (ProductDetailDTO productDetail : productDetails) {
+                Map<String, Object> detailMap = new HashMap<>();
+                detailMap.put("productID", d.getProductDetail());
+                detailMap.put("productName", product.getProductName());
+                detailMap.put("quantity", d.getQuantity());
+                detailMap.put("price", d.getPrice());
 
-            orderDetails.add(detailMap);
+                // Thêm thông tin về màu sắc và kích thước
+                detailMap.put("color", productDetail.getColor());
+                detailMap.put("size", productDetail.getSize());
 
+                // Lấy hình ảnh của sản phẩm
+                List<String> imgList = product.getImgUrl();
+                String firstImg = (imgList != null && !imgList.isEmpty()) ? imgList.get(0) : "";
+                detailMap.put("imgUrl", firstImg);
 
+                // Thêm detailMap vào danh sách orderDetails
+                orderDetails.add(detailMap);
+
+                // In thông tin để kiểm tra
+                System.out.println("Product name: " + product.getProductName());
+                System.out.println("Quantity: " + d.getQuantity());
+                System.out.println("Price: " + d.getPrice());
+                System.out.println("Color: " + productDetail.getColor());
+                System.out.println("Size: " + productDetail.getSize());
+                System.out.println("Subtotal: " + d.getQuantity() * d.getPrice());
+            }
         }
 
+        // Tính toán giảm giá nếu có
         double discount = 0;
         if (voucher != null) {
             if ("Percentage".equalsIgnoreCase((String) voucher.get("discountType"))) {
@@ -92,8 +116,10 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             }
         }
 
+        // Tính toán tổng tiền thanh toán
         double totalAmount = total - discount + order.getFeeShip();
 
+        // Trả về thông tin đơn hàng
         return Map.of(
                 "orderID", orderID,
                 "status", order.getStatus(),
@@ -106,6 +132,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                 "totalAmount", totalAmount
         );
     }
+
 
 
 
