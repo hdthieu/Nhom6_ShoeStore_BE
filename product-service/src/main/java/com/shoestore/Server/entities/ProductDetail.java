@@ -31,6 +31,8 @@ public class ProductDetail {
     @JoinColumn(name = "productID")
     @JsonBackReference("productDetailsReference")
     private Product product;
+    @Transient
+    private double price;
 //    @OneToMany(mappedBy = "productDetail", cascade = CascadeType.ALL)
 //    @JsonIgnore
 //    private List<CartItem> cartItems;

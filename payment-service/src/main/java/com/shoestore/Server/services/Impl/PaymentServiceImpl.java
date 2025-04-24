@@ -29,4 +29,28 @@ public class PaymentServiceImpl implements PaymentService {
     public Optional<Payment> getPaymentById(Integer id) {
         return paymentRepository.findById(id);
     }
+    @Override
+    public Payment updateStatus(int paymentId, String status) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy payment với ID: " + paymentId));
+        payment.setStatus(status);
+        return paymentRepository.save(payment);
+    }
+    @Override
+    public Optional<Payment> getByOrderId(int orderId) {
+        return paymentRepository.findByOrderID(orderId);
+    }
+
+    @Override
+    public void updateStatusByOrderId(int orderId, String newStatus) {
+        Optional<Payment> paymentOpt = paymentRepository.findByOrderID(orderId);
+        if (paymentOpt.isPresent()) {
+            Payment payment = paymentOpt.get();
+            payment.setStatus(newStatus);
+            paymentRepository.save(payment);
+        } else {
+            throw new RuntimeException("Không tìm thấy payment theo orderId = " + orderId);
+        }
+    }
+
 }

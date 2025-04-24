@@ -2,11 +2,17 @@ package com.shoestore.Server.controller;
 
 
 
+import com.shoestore.Server.client.UserClient;
 import com.shoestore.Server.dto.response.LoyalCustomerDTO;
 import com.shoestore.Server.dto.response.OrderDTO;
+import com.shoestore.Server.dto.response.OrderRequestDTO;
+import com.shoestore.Server.dto.response.UserResponseDTO;
 import com.shoestore.Server.entities.Order;
+import com.shoestore.Server.repositories.OrderRepository;
 import com.shoestore.Server.service.OrderService;
 import com.shoestore.Server.service.UserService;
+import feign.FeignException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,14 +20,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,10 +37,38 @@ public class OrderController {
     private UserService userService;
     @Autowired
     private OrderService orderService;
-    @PostMapping("/create")
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(order));
+    @Autowired
+    private UserClient userClient;
+    @Autowired
+    private OrderRepository orderRepository;
+    @PostMapping("/add")
+    public ResponseEntity<?> createBasicOrder(@RequestBody OrderRequestDTO orderDTO) {
+        if (orderDTO.getUser() == null || orderDTO.getUser().getUserID() <= 0) {
+            return ResponseEntity.badRequest().body("userID không hợp lệ");
+        }
+
+        int userID = orderDTO.getUser().getUserID();
+
+        try {
+            userClient.getUser(userID);
+        } catch (FeignException.NotFound e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy user với ID: " + userID);
+        }
+
+        Order order = new Order();
+        order.setFeeShip(orderDTO.getFeeShip());
+        order.setOrderDate(orderDTO.getOrderDate());
+        order.setShippingAddress(orderDTO.getShippingAddress());
+        order.setStatus(orderDTO.getStatus());
+        order.setUserID(userID);
+
+        Order newOrder = orderService.addOrder(order);
+        return ResponseEntity.ok(newOrder);
     }
+
+
+
     @PostMapping("/update-status")
     public ResponseEntity<?> updateOrderStatus(@RequestBody Map<String, Object> payload) {
         System.out.println("Payload received: " + payload);
@@ -163,6 +196,48 @@ public class OrderController {
     public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Integer userId) {
         return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
     }
+
+    @PutMapping("/updatePayment/{orderId}")
+    public ResponseEntity<?> updatePaymentID(@PathVariable int orderId, @RequestParam int paymentID) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        }
+
+        Order order = orderOptional.get();
+        order.setPaymentID(paymentID); // đảm bảo đã có cột này trong entity
+        orderRepository.save(order);
+
+        return ResponseEntity.ok("Payment ID updated");
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable("id") int id) {
+        Optional<Order> orderOpt = orderRepository.findById(id);
+        if (orderOpt.isPresent()) {
+            Order order = orderOpt.get();
+
+            OrderDTO dto = new OrderDTO();
+            dto.setOrderID(order.getOrderID());
+            dto.setDateCreated(order.getOrderDate());  // Gán đúng field
+            dto.setStatus(order.getStatus());
+            dto.setUserId(order.getUserID());
+
+            // Gọi userService (nếu có) để lấy tên
+            String userName = userService.getUserNameById(order.getUserID());
+            dto.setName(userName);
+
+            // Tính tổng tiền
+            double total = order.getOrderDetails().stream()
+                    .mapToDouble(od -> od.getQuantity() * od.getPrice())
+                    .sum();
+            dto.setTotalPrice(total);
+
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 
 

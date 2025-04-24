@@ -92,6 +92,8 @@ public class ProductDetailController {
     public ResponseEntity<ProductDetail> getProductDetailsById(@PathVariable int id) {
         ProductDetail productDetail=productDetailService.getProductDetailById(id);
         if (productDetail != null) {
+            productDetail.setPrice(productDetail.getProduct().getPrice());
+
             return ResponseEntity.ok(productDetail);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
