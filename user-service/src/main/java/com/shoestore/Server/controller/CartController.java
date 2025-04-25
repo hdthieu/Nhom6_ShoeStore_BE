@@ -1,5 +1,6 @@
 package com.shoestore.Server.controller;
 
+import com.shoestore.Server.clients.ProductClient;
 import com.shoestore.Server.dto.ProductDTO;
 import com.shoestore.Server.dto.ProductDetailDTO;
 import com.shoestore.Server.entities.Cart;
@@ -7,7 +8,8 @@ import com.shoestore.Server.entities.CartItem;
 import com.shoestore.Server.entities.CartItemKey;
 import com.shoestore.Server.service.CartItemService;
 import com.shoestore.Server.service.CartService;
-import com.shoestore.Server.service.ProductClient;
+
+import com.shoestore.Server.clients.ProductClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,34 +74,33 @@ public class CartController {
     @PostMapping("/add")
     public ResponseEntity<?> addCartItem(@RequestBody CartItem cartItem) {
         try {
-            // Lấy productDetail từ product-service
-            ProductDetailDTO productDetail = productClient.getProductDetail(cartItem.getId().getProductDetailId());
+            int productDetailId = cartItem.getId().getProductDetailId();
+
+            // ✅ Gọi API đảm bảo ProductDetail có Product
+            ProductDetailDTO productDetail = productClient.getProductDetailWithProduct(productDetailId);
             if (productDetail == null) {
-                return ResponseEntity.badRequest().body("Không tìm thấy ProductDetail với ID: " + cartItem.getId().getProductDetailId());
+                return ResponseEntity.badRequest().body("Không tìm thấy ProductDetail với ID: " + productDetailId);
             }
 
-            // Lấy productID từ productDetail
-            int productId = productDetail.getProductDetailID(); // chú ý: getProductID từ ProductDetailDTO
-
-            // Lấy product từ product-service để lấy giá
-            ProductDTO product = productClient.getProduct(productId);
+            ProductDTO product = productDetail.getProduct();
             if (product == null) {
-                return ResponseEntity.badRequest().body("Không tìm thấy Product với ID: " + productId);
+                return ResponseEntity.badRequest().body("Không tìm thấy Product trong ProductDetail với ID: " + productDetailId);
             }
 
-            // Tính subTotal
+            // ✅ Tính subtotal
             double price = product.getPrice();
-            int quantity = cartItem.getQuantity();
-            cartItem.setSubTotal(price * quantity);
+            cartItem.setSubTotal(price * cartItem.getQuantity());
 
-            // Thêm vào CartItem
+            // ✅ Gọi service để lưu cartItem
             CartItem savedCartItem = cartItemService.addCartItem(cartItem);
             return ResponseEntity.ok(savedCartItem);
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body("Lỗi hệ thống: " + e.getMessage());
         }
     }
+
+
 
 
 }

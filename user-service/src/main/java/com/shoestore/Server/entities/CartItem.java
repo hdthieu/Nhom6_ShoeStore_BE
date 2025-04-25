@@ -23,20 +23,12 @@ public class CartItem {
     @JsonIgnore
     private Cart cart;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @MapsId("productDetailId")
-//    @JoinColumn(name = "productDetailID")
-//    @JsonProperty("productDetail")
-//    @JsonIgnore
-//    private ProductDetail productDetail;
-    private int productDetailID;
     private int quantity;
     private double subTotal;
 
-    public CartItem(CartItemKey id, Cart cart, int productDetailID, int quantity, double subTotal) {
+    public CartItem(CartItemKey id, Cart cart, int quantity, double subTotal) {
         this.id = id;
         this.cart = cart;
-        this.productDetailID = productDetailID;
         this.quantity = quantity;
         this.subTotal = subTotal;
     }

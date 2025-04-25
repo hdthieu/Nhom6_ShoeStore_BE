@@ -1,6 +1,8 @@
 package com.shoestore.Server.controller;
 
 
+import com.shoestore.Server.dto.ProductDTO;
+import com.shoestore.Server.dto.ProductDetailDTO;
 import com.shoestore.Server.entities.Product;
 import com.shoestore.Server.entities.ProductDetail;
 import com.shoestore.Server.service.ProductDetailService;
@@ -98,6 +100,37 @@ public class ProductDetailController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+    //cart
+    @GetMapping("/detailWithProduct/{id}")
+    public ResponseEntity<ProductDetailDTO> getProductDetailWithProduct(@PathVariable int id) {
+        ProductDetail productDetail = productDetailService.getProductDetailById(id);
+        if (productDetail == null || productDetail.getProduct() == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        ProductDetailDTO dto = new ProductDetailDTO();
+        dto.setProductDetailID(productDetail.getProductDetailID());
+        dto.setColor(String.valueOf(productDetail.getColor()));
+        dto.setSize(String.valueOf(productDetail.getSize()));
+        dto.setStockQuantity(productDetail.getStockQuantity());
+
+        // Gán product thủ công
+        Product product = productDetail.getProduct();
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductID(product.getProductID());
+        productDTO.setProductName(product.getProductName());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setStatus(product.getStatus());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setBrandName(product.getBrand().getName());
+        productDTO.setCategoryName(product.getCategory().getName());
+        productDTO.setCreateDate(product.getCreateDate());
+//        productDTO.setImageURL(product.getImageURL());
+
+        dto.setProduct(productDTO);
+
+        return ResponseEntity.ok(dto);
     }
 
 }
