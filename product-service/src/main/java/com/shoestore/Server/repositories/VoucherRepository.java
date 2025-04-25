@@ -8,10 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
     List<Voucher> findByNameContainingIgnoreCase(String name);
     List<Voucher> findByStatusAndNameContainingIgnoreCase(String status, String name);
     List<Voucher> findByStartDateBeforeAndEndDateAfter(LocalDate startDate, LocalDate endDate);
+    // tim theo ten
+    Optional<Voucher> findByNameIgnoreCase(String name);
 }
 

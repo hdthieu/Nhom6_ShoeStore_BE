@@ -62,7 +62,9 @@ public class OrderController {
         order.setShippingAddress(orderDTO.getShippingAddress());
         order.setStatus(orderDTO.getStatus());
         order.setUserID(userID);
-
+        if (orderDTO.getVoucherID() != null) {
+            order.setVoucherID(orderDTO.getVoucherID());
+        }
         Order newOrder = orderService.addOrder(order);
         return ResponseEntity.ok(newOrder);
     }

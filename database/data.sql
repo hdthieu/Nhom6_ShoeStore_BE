@@ -192,7 +192,12 @@ VALUES
 ('Rugged hiking boots.', 1700000.00, 'Scarpa Zodiac Plus', 'Available', 3, 3,3,GETDATE()),
 ('Casual street sneakers.', 950000.00, 'Adidas Superstar', 'Available', 4, 4, 4,GETDATE()),
 ('Italian leather dress shoes.', 2500000.00, 'Santoni Double Monk', 'Available', 5, 5, 5,GETDATE());
-
+EXEC sp_help Product;
+ALTER TABLE Product
+ALTER COLUMN price DECIMAL(12, 2);
+DELETE FROM Product;
+UPDATE Product
+SET price = price * 10000;
 INSERT INTO ProductDetail (color, size, stockQuantity, productID)
 VALUES
 ('RED', 'SIZE_38', 50, 1),

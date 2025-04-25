@@ -1,5 +1,6 @@
 package com.shoestore.Server.controller;
 
+import com.shoestore.Server.dto.VoucherDTO;
 import com.shoestore.Server.dto.VoucherResponseDTO;
 import com.shoestore.Server.entities.Voucher;
 import com.shoestore.Server.repositories.VoucherRepository;
@@ -119,4 +120,46 @@ public class VoucherController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+    @GetMapping("/voucher/check")
+    public ResponseEntity<?> checkVoucherByCode(@RequestParam("code") String code) {
+        Optional<Voucher> voucherOpt = voucherRepository.findByNameIgnoreCase(code);
+
+        if (voucherOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Voucher not found");
+        }
+
+        Voucher voucher = voucherOpt.get();
+        LocalDate today = LocalDate.now();
+
+        // 🔄 Đổi thứ tự kiểm tra
+        if (voucher.getStatus() == null || !voucher.getStatus().trim().equalsIgnoreCase("Active")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Voucher chưa được kích hoạt");
+        }
+
+        if (today.isBefore(voucher.getStartDate())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Voucher chưa bắt đầu");
+        }
+
+        if (today.isAfter(voucher.getEndDate())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Voucher đã hết hạn");
+        }
+
+        // ✅ Trả về DTO
+        VoucherDTO dto = new VoucherDTO();
+        dto.setVoucherID(voucher.getVoucherID());
+        dto.setName(voucher.getName());
+        dto.setDiscountType(voucher.getDiscountType().toUpperCase()); // "PERCENTAGE", "FLAT"
+        dto.setDiscountValue(voucher.getDiscountValue());
+        dto.setMinValueOrder(voucher.getMinValueOrder());
+        dto.setStartDate(voucher.getStartDate());
+        dto.setEndDate(voucher.getEndDate());
+        dto.setStatus(voucher.getStatus());
+
+        return ResponseEntity.ok(dto);
+    }
+
+
+
+
+
 }
