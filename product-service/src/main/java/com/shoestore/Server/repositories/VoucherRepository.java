@@ -13,8 +13,19 @@ import java.util.Optional;
 public interface VoucherRepository extends JpaRepository<Voucher, Integer> {
     List<Voucher> findByNameContainingIgnoreCase(String name);
     List<Voucher> findByStatusAndNameContainingIgnoreCase(String status, String name);
+
     List<Voucher> findByStartDateBeforeAndEndDateAfter(LocalDate startDate, LocalDate endDate);
     // tim theo ten
     Optional<Voucher> findByNameIgnoreCase(String name);
+
+    List<Voucher> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(LocalDate start, LocalDate end);
+    List<Voucher> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndStatusAndNameContainingIgnoreCase(
+            LocalDate startDate, LocalDate endDate, String status, String search);
+    List<Voucher> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndStatus(LocalDate startDate, LocalDate endDate, String status);
+    // Tìm voucher theo trạng thái
+    List<Voucher> findByStatus(String status);
+    // Tìm tất cả voucher
+    List<Voucher> findAll();
+
 }
 

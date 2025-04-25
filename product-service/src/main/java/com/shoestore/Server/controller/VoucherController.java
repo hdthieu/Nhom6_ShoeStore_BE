@@ -32,28 +32,52 @@ public class VoucherController {
     @Autowired
     private VoucherService voucherService;
 
-    @GetMapping("/voucher/search")
-    public ResponseEntity<List<Voucher>> searchVouchers(
-            @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String endDate
-    ) {
-        LocalDate start = null;
-        LocalDate end = null;
-        try {
-            if (startDate != null && !startDate.isEmpty()) {
-                start = LocalDate.parse(startDate);
-            }
-            if (endDate != null && !endDate.isEmpty()) {
-                end = LocalDate.parse(endDate);
-            }
-        } catch (Exception e) {
-            System.out.println("Lỗi khi chuyển đổi ngày: " + e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
+//    @GetMapping("/voucher/search")
+//    public ResponseEntity<List<Voucher>> searchVouchers(
+//            @RequestParam(required = false) String startDate,
+//            @RequestParam(required = false) String endDate
+//    ) {
+//        LocalDate start = null;
+//        LocalDate end = null;
+//        try {
+//            if (startDate != null && !startDate.isEmpty()) {
+//                start = LocalDate.parse(startDate);
+//            }
+//            if (endDate != null && !endDate.isEmpty()) {
+//                end = LocalDate.parse(endDate);
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Lỗi khi chuyển đổi ngày: " + e.getMessage());
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        List<Voucher> vouchers = voucherService.findVoucherByCodeOrDate(start, end);
+//        return ResponseEntity.ok(vouchers);
+//    }
+@GetMapping("/voucher/search")
+public ResponseEntity<List<Voucher>> searchVouchers(
+        @RequestParam(required = false) String startDate,
+        @RequestParam(required = false) String endDate,
+        @RequestParam(required = false) String status
+) {
+    LocalDate start = null;
+    LocalDate end = null;
 
-        List<Voucher> vouchers = voucherService.findVoucherByCodeOrDate(start, end);
-        return ResponseEntity.ok(vouchers);
+    try {
+        if (startDate != null && !startDate.isEmpty()) {
+            start = LocalDate.parse(startDate);
+        }
+        if (endDate != null && !endDate.isEmpty()) {
+            end = LocalDate.parse(endDate);
+        }
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().build();
     }
+
+    List<Voucher> vouchers = voucherService.searchVouchersWithFilters(start, end, status);
+    return ResponseEntity.ok(vouchers);
+}
+
 
 
     @PostMapping("/voucher/add")
@@ -120,6 +144,7 @@ public class VoucherController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
     @GetMapping("/voucher/check")
     public ResponseEntity<?> checkVoucherByCode(@RequestParam("code") String code) {
         Optional<Voucher> voucherOpt = voucherRepository.findByNameIgnoreCase(code);
@@ -157,6 +182,7 @@ public class VoucherController {
 
         return ResponseEntity.ok(dto);
     }
+
 
 
 

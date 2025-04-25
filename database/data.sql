@@ -350,7 +350,7 @@ VALUES
 ('1122334455', 'admin3@example.com', 'Admin User 3', 'securepassword3', '1122334455', 'Active', 'admin3', 1),
 -- Customers
 ('02233445566', 'customer1@example.com', 'John Doe', '$2a$10$piYOHuFhF7WWTyziAev08.RtlRcnZuruhfrTrgYWO6phJ4l1XvSBm', '2233445566', 'Active', 'johndoe1', 2),
-('03344556677', 'customer2@example.com', 'Jane Smith', 'password456', '3344556677', 'Active', 'janesmith2', 2),
+('03344556677', 'hdthieu2003@gmail.com', 'Jane Smith', 'password456', '3344556677', 'Active', 'janesmith2', 2),
 ('04455667788', 'customer3@example.com', 'Alice Johnson', 'password789', '4455667788', 'Active', 'alicejohnson3', 2),
 ('05566778899', 'customer4@example.com', 'Bob Brown', 'password101', '5566778899', 'Active', 'bobbrown4', 2),
 ('06677889900', 'customer5@example.com', 'Charlie Davis', 'password202', '6677889900', 'Active', 'charliedavis5', 2),
@@ -437,7 +437,6 @@ VALUES
 (2, 300.00, 8, 48), -- Timberland Premium, $150.00 * 2
 (4, 640.00, 9, 49), -- Converse Chuck Taylor, $80.00 * 4
 (5, 500.00, 10, 50); -- Clarks Originals, $100.00 * 5
-
 
 --ShoeStore_PaymentService
 use ShoeStore_PaymentService

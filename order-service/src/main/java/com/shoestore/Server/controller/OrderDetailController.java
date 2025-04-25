@@ -7,7 +7,7 @@ import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.entities.OrderDetail;
 import com.shoestore.Server.repositories.OrderDetailRepository;
 import com.shoestore.Server.repositories.OrderRepository;
-import com.shoestore.Server.request.OrderDetailRequestDTO;
+import com.shoestore.Server.request.*;
 import com.shoestore.Server.service.OrderDetailService;
 import com.shoestore.Server.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
