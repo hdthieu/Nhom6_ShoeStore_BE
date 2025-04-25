@@ -68,13 +68,10 @@ public List<Voucher> searchVouchersWithFilters(LocalDate startDate, LocalDate en
             endDate != null ? endDate.toString() : "null",
             status != null && !status.isEmpty() ? status.toLowerCase() : "all");
 
-    // Kiểm tra cache
     List<Voucher> cached = (List<Voucher>) redisTemplate.opsForValue().get(cacheKey);
     if (cached != null) {
         return cached;
     }
-
-    // Nếu không có cache thì lọc
     List<Voucher> all = voucherRepository.findAll();
 
     List<Voucher> result = all.stream()

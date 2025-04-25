@@ -30,7 +30,6 @@ public class OrderServiceImpl implements OrderService {
     private RabbitTemplate rabbitTemplate;
     @PersistenceContext
     private EntityManager entityManager;
-
     public OrderServiceImpl(OrderRepository orderRepository, UserClient userClient, ProductClient productClient) {
         this.orderRepository = orderRepository;
         this.userClient = userClient;
@@ -97,20 +96,13 @@ public class OrderServiceImpl implements OrderService {
             List<OrderReturnedEvent.ProductQuantity> items = order.getOrderDetails().stream()
                     .map(detail -> {
                         OrderReturnedEvent.ProductQuantity pq = new OrderReturnedEvent.ProductQuantity();
-                        pq.setProductId(detail.getProductDetail()); // Set product ID
-                        pq.setQuantity(detail.getQuantity()); // Set quantity
-
-                        // Lấy thông tin sản phẩm từ productClient
-                        ProductResponseDTO product = productClient.getProductById(detail.getProductDetail()); // Lấy thông tin sản phẩm
-
-                        // Lấy danh sách ProductDetailDTO từ ProductResponseDTO
-                        List<ProductDetailDTO> productDetails = product.getProductDetails(); // Lấy danh sách ProductDetail
-
-                        // Lặp qua ProductDetailDTO để lấy màu sắc và kích thước
+                        pq.setProductId(detail.getProductDetail());
+                        pq.setQuantity(detail.getQuantity());
+                        ProductResponseDTO product = productClient.getProductById(detail.getProductDetail());
+                        List<ProductDetailDTO> productDetails = product.getProductDetails();
                         for (ProductDetailDTO productDetail : productDetails) {
-                            // Thêm màu sắc và kích thước vào ProductQuantity
-                            pq.setColor(productDetail.getColor()); // Set color
-                            pq.setSize(productDetail.getSize());   // Set size
+                            pq.setColor(productDetail.getColor());
+                            pq.setSize(productDetail.getSize());
                         }
 
                         return pq;
@@ -156,19 +148,55 @@ public class OrderServiceImpl implements OrderService {
         return entityManager.createQuery(jpql, Order.class).getResultList();
     }
 
-    @Override
-    public Map<String, Object> getRevenueStatistics(LocalDate startDate, LocalDate endDate){
-        List<Order> orders = orderRepository.findByOrderDateBetween(startDate, endDate);
-        double totalRevenue = orders.stream()
-                .mapToDouble(order -> order.getOrderDetails().stream()
+//    @Override
+//    public Map<String, Object> getRevenueStatistics(LocalDate startDate, LocalDate endDate){
+//        List<Order> orders = orderRepository.findByOrderDateBetween(startDate, endDate);
+//        double totalRevenue = orders.stream()
+//                .mapToDouble(order -> order.getOrderDetails().stream()
+//                        .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
+//                        .sum() + order.getFeeShip())
+//                .sum();
+//        Map<String, Object> stats = new HashMap<>();
+//        stats.put("totalRevenue", totalRevenue);
+//        stats.put("totalOrders", orders.size());
+//        return stats;
+//    }
+@Override
+public Map<String, Object> getRevenueStatistics(LocalDate startDate, LocalDate endDate) {
+    List<Order> orders = orderRepository.findByOrderDateBetween(startDate, endDate);
+
+    double totalRevenue = orders.stream()
+            .mapToDouble(order -> {
+                double orderTotal = order.getOrderDetails().stream()
                         .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
-                        .sum() + order.getFeeShip())
-                .sum();
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("totalRevenue", totalRevenue);
-        stats.put("totalOrders", orders.size());
-        return stats;
-    }
+                        .sum();
+
+                double discount = 0.0;
+
+                if (order.getVoucherID() > 0) {
+                    try {
+                        VoucherResponseDTO voucher = productClient.getVoucherById(order.getVoucherID());
+
+                        if ("Percentage".equalsIgnoreCase(voucher.getDiscountType())) {
+                            discount = orderTotal * (voucher.getDiscountValue() / 100.0);
+                        } else if ("Flat".equalsIgnoreCase(voucher.getDiscountType())) {
+                            discount = voucher.getDiscountValue();
+                        }
+                    } catch (Exception e) {
+                        // Handle lỗi nếu ProductService không phản hồi, hoặc voucherID không tồn tại
+                        System.err.println("Lỗi khi gọi ProductService: " + e.getMessage());
+                    }
+                }
+
+                return (orderTotal - discount) + order.getFeeShip();
+            })
+            .sum();
+
+    Map<String, Object> stats = new HashMap<>();
+    stats.put("totalRevenue", totalRevenue);
+    stats.put("totalOrders", orders.size());
+    return stats;
+}
 
     // lấy doanh thu 1 năm và số sản phẩm
 //    @Override

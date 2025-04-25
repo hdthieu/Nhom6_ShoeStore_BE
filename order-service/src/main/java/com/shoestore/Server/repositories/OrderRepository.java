@@ -14,15 +14,32 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findAllByUserID(int userId);
     public Order findByOrderID(int orderID);
-    @Query("SELECT COUNT(DISTINCT o.orderID) as totalOrders, " +
-            "SUM(od.quantity) AS totalQuantity, " +
-            "SUM(od.quantity * od.price) AS totalRevenue, " +
-            "o.voucherID " +
-            "FROM OrderDetail od " +
-            "JOIN od.order o " +
-            "WHERE YEAR(o.orderDate) = :year AND o.voucherID > 0 " +
-            "GROUP BY o.voucherID")
-    List<Object[]> findTotalRevenueAndQuantityByYear(@Param("year") int year);
+//    @Query("SELECT COUNT(DISTINCT o.orderID) as totalOrders, " +
+//            "SUM(od.quantity) AS totalQuantity, " +
+//            "SUM(od.quantity * od.price) AS totalRevenue, " +
+//            "o.voucherID " +
+//            "FROM OrderDetail od " +
+//            "JOIN od.order o " +
+//            "WHERE YEAR(o.orderDate) = :year AND o.voucherID > 0 " +
+//            "GROUP BY o.voucherID")
+@Query(value = """
+    SELECT COUNT(DISTINCT o.orderID) AS totalOrders, 
+           SUM(od.quantity) AS totalQuantity, 
+           SUM(od.quantity * od.price) - 
+           SUM(CASE 
+                   WHEN v.discountType = 'Percentage' THEN (od.quantity * od.price * v.discountValue / 100)
+                   WHEN v.discountType = 'Flat' THEN v.discountValue
+                   ELSE 0
+               END) AS totalRevenue, 
+           o.voucherID 
+    FROM OrderDetail od
+    JOIN Orders o ON od.orderID = o.orderID
+    JOIN ShoeStore_ProductService.dbo.Voucher v ON o.voucherID = v.voucherID
+    WHERE YEAR(o.orderDate) = :year 
+    AND o.voucherID > 0
+    GROUP BY o.voucherID
+""", nativeQuery = true)
+List<Object[]> findTotalRevenueAndQuantityByYear(@Param("year") int year);
 
 
 
