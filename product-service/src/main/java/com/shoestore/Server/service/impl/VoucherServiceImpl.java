@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 
@@ -31,34 +32,64 @@ public class VoucherServiceImpl implements VoucherService {
         this.redisTemplate = redisTemplate;
     }
 
+//    @Override
+//    public List<Voucher> findVoucherByCodeOrDate(LocalDate startDate, LocalDate endDate) {
+//        String cacheKey;
+//        if (startDate == null && endDate == null) {
+//            cacheKey = "voucher:all";
+//        } else {
+//            cacheKey = "voucher:filter:" + startDate + ":" + endDate;
+//        }
+//
+//        // Thử lấy từ cache
+//        List<Voucher> cached = (List<Voucher>) redisTemplate.opsForValue().get(cacheKey);
+//        if (cached != null) {
+//            return cached;
+//        }
+//
+//        // Nếu không có thì truy vấn từ DB
+//        List<Voucher> result;
+//        if (startDate == null && endDate == null) {
+//            result = voucherRepository.findAll();
+//        } else {
+//
+//            result = voucherRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate, endDate);
+//        }
+//
+//        redisTemplate.opsForValue().set(cacheKey, result);
+//
+//        return result;
+//    }
 @Override
-public List<Voucher> findVoucherByCodeOrDate(LocalDate startDate, LocalDate endDate) {
-    String cacheKey;
-    if (startDate == null && endDate == null) {
-        cacheKey = "voucher:all";
-    } else {
-        cacheKey = "voucher:filter:" + startDate + ":" + endDate;
-    }
+public List<Voucher> searchVouchersWithFilters(LocalDate startDate, LocalDate endDate, String status) {
+    // Tạo key cache dựa trên bộ lọc
+    String cacheKey = String.format("voucher:filter:start:%s:end:%s:status:%s",
+            startDate != null ? startDate.toString() : "null",
+            endDate != null ? endDate.toString() : "null",
+            status != null && !status.isEmpty() ? status.toLowerCase() : "all");
 
-    // Thử lấy từ cache
+    // Kiểm tra cache
     List<Voucher> cached = (List<Voucher>) redisTemplate.opsForValue().get(cacheKey);
     if (cached != null) {
         return cached;
     }
 
-    // Nếu không có thì truy vấn từ DB
-    List<Voucher> result;
-    if (startDate == null && endDate == null) {
-        result = voucherRepository.findAll();
-    } else {
+    // Nếu không có cache thì lọc
+    List<Voucher> all = voucherRepository.findAll();
 
-        result = voucherRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(startDate, endDate);
-    }
+    List<Voucher> result = all.stream()
+            .filter(v -> startDate == null || !v.getStartDate().isBefore(startDate))
+            .filter(v -> endDate == null || !v.getEndDate().isAfter(endDate))
+            .filter(v -> status == null || status.isEmpty() || v.getStatus().equalsIgnoreCase(status))
+            .collect(Collectors.toList());
 
-    redisTemplate.opsForValue().set(cacheKey, result);
+    // Lưu vào cache
+    redisTemplate.opsForValue().set(cacheKey, result, 10, TimeUnit.MINUTES);
 
     return result;
 }
+
+
 
     @Override
     public Voucher updateVoucher(int id, Voucher voucher) {
@@ -194,18 +225,8 @@ public List<Voucher> findVoucherByCodeOrDate(LocalDate startDate, LocalDate endD
         }
     }
 
+
+
+
 }
 
-
-
-
-
-//    @Override
-//    public List<Voucher> findVoucherByCodeOrDate(LocalDate startDate, LocalDate endDate) {
-//
-//        if (startDate == null && endDate == null) {
-//            return voucherRepository.findAll();
-//        }
-//
-//        return voucherRepository.findByStartDateBeforeAndEndDateAfter(startDate, endDate);
-//    }
