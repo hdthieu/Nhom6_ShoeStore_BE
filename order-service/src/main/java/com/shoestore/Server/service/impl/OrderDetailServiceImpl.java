@@ -119,18 +119,30 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         // Tính toán tổng tiền thanh toán
         double totalAmount = total - discount + order.getFeeShip();
 
-        // Trả về thông tin đơn hàng
-        return Map.of(
-                "orderID", orderID,
-                "status", order.getStatus(),
-                "orderDate", order.getOrderDate(),
-                "feeShip", order.getFeeShip(),
-                "shippingAddress", order.getShippingAddress(),
-                "user", user,
-                "voucher", voucher,
-                "orderDetails", orderDetails,
-                "totalAmount", totalAmount
-        );
+//        // Trả về thông tin đơn hàng
+//        return Map.of(
+//                "orderID", orderID,
+//                "status", order.getStatus(),
+//                "orderDate", order.getOrderDate(),
+//                "feeShip", order.getFeeShip(),
+//                "shippingAddress", order.getShippingAddress(),
+//                "user", user,
+//                "voucher", voucher,
+//                "orderDetails", orderDetails,
+//                "totalAmount", totalAmount
+//        );
+        Map<String, Object> response = new HashMap<>();
+        response.put("orderID", orderID);
+        response.put("status", order.getStatus());
+        response.put("orderDate", order.getOrderDate());
+        response.put("feeShip", order.getFeeShip());
+        response.put("shippingAddress", order.getShippingAddress());
+        response.put("user", user);
+        response.put("voucher", voucher);
+        response.put("orderDetails", orderDetails);
+        response.put("totalAmount", totalAmount);
+        return response;
+
     }
 
 
@@ -221,4 +233,17 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 //    public void deleteByProductIDAndOrderID(int productID, int orderID) {
 //        orderDetailRepository.deleteByProductProductIDAndOrderOrderID(productID, orderID);
 //    }
+@Override
+public OrderDetail addOrderDetail(OrderDetailResponeDTO dto) {
+    Order order = orderRepository.findById((int) dto.getOrderID())
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+
+    OrderDetail orderDetail = new OrderDetail();
+    orderDetail.setOrder(order);
+    orderDetail.setProductDetail(dto.getProductDetail());
+    orderDetail.setPrice(dto.getPrice());
+    orderDetail.setQuantity(dto.getQuantity());
+
+    return orderDetailRepository.save(orderDetail);
+}
 }

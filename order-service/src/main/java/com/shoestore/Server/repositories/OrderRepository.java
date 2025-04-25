@@ -47,6 +47,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     long countByStatus(String status);
     List<Order> findByOrderDateBetween(LocalDate startDate, LocalDate endDate);
     Page<Order> findByStatusIgnoreCase(String status, Pageable pageable);
-
+    List<Order> findByUserID(Integer userID);
 }
 

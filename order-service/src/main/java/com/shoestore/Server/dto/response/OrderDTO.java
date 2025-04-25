@@ -15,5 +15,5 @@ public class OrderDTO {
     private String name;
     private double totalPrice;
     private String status;
-
+    private Integer userId;
 }

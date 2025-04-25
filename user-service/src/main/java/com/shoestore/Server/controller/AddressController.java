@@ -23,4 +23,13 @@ public class AddressController {
     public List<Address> getAddressByUser(@PathVariable Long userId) {
         return addressService.getAddressByUserId(userId);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Address> getAddressById(@PathVariable int id) {
+        Address address = addressService.getAddressById(id); // Gọi đúng hàm
+        if (address != null) {
+            return ResponseEntity.ok(address);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
