@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
 
         // Xóa sản phẩm khỏi Redis cache
         productCacheRepository.deleteById(id); // Xóa khỏi Redis cache
-        clearProductCache();
+
         return true;
     }
 
@@ -229,14 +229,6 @@ public class ProductServiceImpl implements ProductService {
 //        return productRepository.findTop10Trending(PageRequest.of(0, 10));
 //    }
 
-    private void clearProductCache() {
-        // Tạo pattern để tìm tất cả các keys liên quan đến "ProductCache"
-        Set<String> keys = redisTemplate.keys("productCache:*");
 
-        // Nếu có keys thì xóa chúng
-        if (keys != null && !keys.isEmpty()) {
-            redisTemplate.delete(keys);  // Xóa tất cả các keys tìm được
-        }
-    }
 
 }
