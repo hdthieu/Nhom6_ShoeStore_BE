@@ -304,6 +304,9 @@ VALUES
 (49, '../images/product49.png'),
 (50, '../images/product50.png');
 UPDATE Product_ImageURL
+SET imageURL = REPLACE(imageURL, '../images/', '')
+WHERE imageURL LIKE '../images/%';
+UPDATE Product_ImageURL
 SET imageURL = 'product' + CAST(productID AS VARCHAR) + '_1.png'
 WHERE imageURL = 'product' + CAST(productID AS VARCHAR);
 UPDATE Product_ImageURL SET imageURL = 'product1_1.png' WHERE productID = 1;
