@@ -99,6 +99,32 @@ public class CartController {
             return ResponseEntity.badRequest().body("Lỗi hệ thống: " + e.getMessage());
         }
     }
+    @PutMapping("/item/update")
+    public ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody CartItem cartItem) {
+        if (cartItem == null || cartItem.getId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        CartItem updatedItem = cartItemService.updateQuantity(cartItem.getId(), cartItem);
+        if (updatedItem != null) {
+            return ResponseEntity.ok(updatedItem);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+    @PostMapping("/create")
+    public ResponseEntity<Cart> createCartForUser(@RequestBody int userId) {
+        // Kiểm tra nếu người dùng đã có giỏ hàng
+        Cart existingCart = cartService.getCartByUserId(userId);
+        if (existingCart != null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        // Tạo giỏ hàng mới
+        Cart newCart = cartService.createCartForUser(userId);
+        return ResponseEntity.ok(newCart);
+    }
+
 
 
 

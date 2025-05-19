@@ -4,4 +4,6 @@ import com.shoestore.Server.entities.Cart;
 
 public interface CartService {
     Cart getCartByUserId(int id);
+
+    Cart createCartForUser(int userId);
 }

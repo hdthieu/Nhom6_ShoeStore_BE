@@ -67,10 +67,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
 
-    @Override
-    public List<CartItem> getCartItemsByCartId(int cartId) {
-        return List.of();
-    }
+
 
     @Override
     public CartItem addCartItem(CartItem cartItem) {
@@ -96,21 +93,44 @@ public class CartItemServiceImpl implements CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
-
-
-
-
-
-
     @Override
     public CartItem getCartItemById(CartItemKey cartItemKey) {
-        return null;
+        return cartItemRepository.findById(cartItemKey).orElse(null);
     }
 
     @Override
     public CartItem updateQuantity(CartItemKey id, CartItem cartItem) {
+        Optional<CartItem> opt = cartItemRepository.findById(id);
+        if (opt.isPresent()) {
+            CartItem existingItem = opt.get();
+
+            // Cập nhật số lượng
+            existingItem.setQuantity(cartItem.getQuantity());
+
+            // Cập nhật subtotal nếu cần
+            ProductDetailDTO productDetail = productClient.getProductDetailWithProduct(id.getProductDetailId());
+            if (productDetail != null && productDetail.getProduct() != null) {
+                double price = productDetail.getProduct().getPrice();
+                existingItem.setSubTotal(price * cartItem.getQuantity());
+            }
+
+            return cartItemRepository.save(existingItem);
+        }
         return null;
     }
+
+
+    @Override
+    public List<CartItem> getCartItemsByCartId(int cartId) {
+        // Trả về list CartItem entity
+        return cartItemRepository.findCartItemsByCartId(cartId);
+    }
+
+
+
+
+
+
 
     @Override
     public void deleteCartItem(CartItemKey id) {
