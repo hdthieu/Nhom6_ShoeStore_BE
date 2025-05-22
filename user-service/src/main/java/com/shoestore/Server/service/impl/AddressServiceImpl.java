@@ -26,4 +26,9 @@ public class AddressServiceImpl implements AddressService {
         return addressRepository.findById((long) id).orElse(null);
     }
 
+    @Override
+    public Address saveAddress(Address address) {
+        return addressRepository.save(address);
+    }
+
 }

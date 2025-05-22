@@ -6,5 +6,5 @@ import java.util.List;
 public interface AddressService {
     List<Address> getAddressByUserId(Long userId);
     Address getAddressById(int id);
-
+    Address saveAddress(Address address);
 }
