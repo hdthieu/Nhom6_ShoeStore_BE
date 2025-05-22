@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @FeignClient(name = "USER-SERVICE", url = "http://localhost:8765/auth")
+//@FeignClient(name = "USER-SERVICE", url = "http://api-gateway:8765/auth")
 public interface UserClient {
     @GetMapping("/getListCusCustom")
     List<UserResponseDTO> getListCusCustom();
