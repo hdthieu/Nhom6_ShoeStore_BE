@@ -8,7 +8,7 @@ import com.shoestore.Server.entities.CartItemKey;
 import java.util.List;
 
 public interface CartItemService {
-    List<CartItemDTO> getCartItemsByCartId(Integer cartId);
+//    List<CartItemDTO> getCartItemsByCartId(Integer cartId);
 
     List<CartItem> getCartItemsByCartId(int cartId);
     CartItem addCartItem(CartItem cartItem);

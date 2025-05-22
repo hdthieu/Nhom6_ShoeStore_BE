@@ -30,41 +30,41 @@ public class CartItemServiceImpl implements CartItemService {
     private ProductClient productClient;
     @Autowired
     private CartRepository cartRepository;
-    @Override
-    public List<CartItemDTO> getCartItemsByCartId(Integer cartId) {
-        List<CartItem> cartItems = cartItemRepository.findCartItemsByCartId(cartId);
-        List<CartItemDTO> response = new ArrayList<>();
-
-        for (CartItem item : cartItems) {
-            int productDetailId = item.getId().getProductDetailId();
-
-            // ✅ Gọi API mới để lấy cả ProductDetail và Product
-            ProductDetailDTO productDetail = productClient.getProductDetailWithProduct(productDetailId);
-            if (productDetail == null || productDetail.getProduct() == null) continue;
-
-            CartItemDTO dto = new CartItemDTO();
-
-            // ✅ Set id
-            CartItemDTO.IdDTO idDTO = new CartItemDTO.IdDTO();
-            idDTO.setCartId(item.getId().getCartId());
-            idDTO.setProductDetailId(productDetail.getProductDetailID());
-            dto.setId(idDTO);
-
-            // ✅ Set product
-            dto.setProduct(productDetail.getProduct());
-
-            // ✅ Set productDetails
-            dto.setProductDetails(List.of(productDetail));
-
-            // ✅ Set quantity & subtotal
-            dto.setQuantity(item.getQuantity());
-            dto.setSubTotal(item.getSubTotal());
-
-            response.add(dto);
-        }
-
-        return response;
-    }
+//    @Override
+//    public List<CartItemDTO> getCartItemsByCartId(Integer cartId) {
+//        List<CartItem> cartItems = cartItemRepository.findCartItemsByCartId(cartId);
+//        List<CartItemDTO> response = new ArrayList<>();
+//
+//        for (CartItem item : cartItems) {
+//            int productDetailId = item.getId().getProductDetailId();
+//
+//            // ✅ Gọi API mới để lấy cả ProductDetail và Product
+//            ProductDetailDTO productDetail = productClient.getProductDetailWithProduct(productDetailId);
+//            if (productDetail == null || productDetail.getProduct() == null) continue;
+//
+//            CartItemDTO dto = new CartItemDTO();
+//
+//            // ✅ Set id
+//            CartItemDTO.IdDTO idDTO = new CartItemDTO.IdDTO();
+//            idDTO.setCartId(item.getId().getCartId());
+//            idDTO.setProductDetailId(productDetail.getProductDetailID());
+//            dto.setId(idDTO);
+//
+//            // ✅ Set product
+//            dto.setProduct(productDetail.getProduct());
+//
+//            // ✅ Set productDetails
+//            dto.setProductDetails(List.of(productDetail));
+//
+//            // ✅ Set quantity & subtotal
+//            dto.setQuantity(item.getQuantity());
+//            dto.setSubTotal(item.getSubTotal());
+//
+//            response.add(dto);
+//        }
+//
+//        return response;
+//    }
 
 
 

@@ -25,7 +25,8 @@ public class CartItem {
 
     private int quantity;
     private double subTotal;
-
+    @Transient // Không lưu vào DB
+    private int stockQuantity;
     public CartItem(CartItemKey id, Cart cart, int quantity, double subTotal) {
         this.id = id;
         this.cart = cart;

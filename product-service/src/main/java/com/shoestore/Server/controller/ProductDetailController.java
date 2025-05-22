@@ -91,16 +91,27 @@ public class ProductDetailController {
         return ResponseEntity.ok(response);
     }
     @GetMapping("/productDetailId/{id}")
-    public ResponseEntity<ProductDetail> getProductDetailsById(@PathVariable int id) {
-        ProductDetail productDetail=productDetailService.getProductDetailById(id);
-        if (productDetail != null) {
-            productDetail.setPrice(productDetail.getProduct().getPrice());
-
-            return ResponseEntity.ok(productDetail);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<ProductDetailDTO> getProductDetailsById(@PathVariable int id) {
+        ProductDetail productDetail = productDetailService.getProductDetailById(id);
+        if (productDetail == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        ProductDetailDTO dto = new ProductDetailDTO();
+        dto.setProductDetailID(productDetail.getProductDetailID());
+        dto.setColor(productDetail.getColor().toString());
+        dto.setSize(productDetail.getSize().toString());
+        dto.setStockQuantity(productDetail.getStockQuantity());
+
+        // Chỉ set productID nếu product != null
+        if (productDetail.getProduct() != null) {
+            dto.setProductID(productDetail.getProduct().getProductID());
+        }
+
+        return ResponseEntity.ok(dto);
     }
+
+    //cart
     //cart
     @GetMapping("/detailWithProduct/{id}")
     public ResponseEntity<ProductDetailDTO> getProductDetailWithProduct(@PathVariable int id) {
@@ -128,7 +139,8 @@ public class ProductDetailController {
         productDTO.setCreateDate(product.getCreateDate());
 //        productDTO.setImageURL(product.getImageURL());
 
-        dto.setProduct(productDTO);
+        dto.setProduct(productDTO); // ✅ set đúng kiểu `int`
+
 
         return ResponseEntity.ok(dto);
     }

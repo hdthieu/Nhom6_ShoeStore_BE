@@ -1,6 +1,7 @@
 package com.shoestore.Server.controller;
 
 import com.shoestore.Server.clients.ProductClient;
+import com.shoestore.Server.dto.CartDTO;
 import com.shoestore.Server.dto.ProductDTO;
 import com.shoestore.Server.dto.ProductDetailDTO;
 import com.shoestore.Server.entities.Cart;
@@ -62,6 +63,21 @@ public class CartController {
     @GetMapping("/userid/{userId}")
     public ResponseEntity<Cart> getCartByUserId(@PathVariable("userId") int userId) {
         Cart cart = cartService.getCartByUserId(userId);
+
+        if (cart.getCartItems() != null) {
+            for (CartItem item : cart.getCartItems()) {
+                int productDetailId = item.getId().getProductDetailId();
+
+                try {
+                    ProductDetailDTO dto = productClient.getProductDetailWithProduct(productDetailId);
+                    item.setStockQuantity(dto.getStockQuantity());
+                } catch (Exception e) {
+                    System.err.println("❌ Lỗi khi gọi productClient: " + e.getMessage());
+                    item.setStockQuantity(0); // fallback nếu gọi lỗi
+                }
+            }
+        }
+
         return ResponseEntity.ok(cart);
     }
 
@@ -124,6 +140,15 @@ public class CartController {
         Cart newCart = cartService.createCartForUser(userId);
         return ResponseEntity.ok(newCart);
     }
+    @PostMapping("/save")
+    public ResponseEntity<CartDTO> saveCart(@RequestBody CartDTO cartDTO) {
+        try {
+            return ResponseEntity.ok(cartService.saveCart(cartDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
 
 
