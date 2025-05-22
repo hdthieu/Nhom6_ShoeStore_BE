@@ -1,14 +1,14 @@
 package com.shoestore.Server.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
 public class OrderDTO {
     private Integer orderID;
     private LocalDate dateCreated;
@@ -16,4 +16,5 @@ public class OrderDTO {
     private double totalPrice;
     private String status;
     private Integer userId;
+    private Integer voucherID;
 }

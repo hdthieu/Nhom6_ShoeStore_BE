@@ -7,6 +7,7 @@ import com.example.notificationservice.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.*;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +40,14 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(subject);
             helper.setText(htmlContent, true);
             mailSender.send(message);
-
             logBuilder.success(true);
+        } catch (MailSendException e) {
+            String errorMsg = e.getMessage();
+            if (errorMsg != null && errorMsg.contains("Daily user sending limit exceeded")) {
+                logBuilder.success(false).errorMessage("Mail send limit exceeded: " + errorMsg);
+            } else {
+                logBuilder.success(false).errorMessage("Mail send error: " + errorMsg);
+            }
         } catch (Exception e) {
             logBuilder.success(false).errorMessage(e.getMessage());
             throw e;

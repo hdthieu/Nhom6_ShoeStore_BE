@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   eureka-server:
     container_name: eureka-server
@@ -73,6 +74,46 @@ services:
       - payment-service
     networks:
       - backend
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ../Project_Group6_Fe
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-container
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - backend
+
+  redis:
+    image: redis:7
+    container_name: redis-container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - backend
+
+volumes:
+  rabbitmq-data:
+  redis-data:
 
 networks:
   backend:

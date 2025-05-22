@@ -16,4 +16,5 @@ public class OrderRequestDTO {
     private String status;
     private String shippingAddress;
     private UserDTO user;
+    private Integer voucherID;
 }

@@ -30,47 +30,44 @@ public class CartItemServiceImpl implements CartItemService {
     private ProductClient productClient;
     @Autowired
     private CartRepository cartRepository;
-    @Override
-    public List<CartItemDTO> getCartItemsByCartId(Integer cartId) {
-        List<CartItem> cartItems = cartItemRepository.findCartItemsByCartId(cartId);
-        List<CartItemDTO> response = new ArrayList<>();
+//    @Override
+//    public List<CartItemDTO> getCartItemsByCartId(Integer cartId) {
+//        List<CartItem> cartItems = cartItemRepository.findCartItemsByCartId(cartId);
+//        List<CartItemDTO> response = new ArrayList<>();
+//
+//        for (CartItem item : cartItems) {
+//            int productDetailId = item.getId().getProductDetailId();
+//
+//            // ✅ Gọi API mới để lấy cả ProductDetail và Product
+//            ProductDetailDTO productDetail = productClient.getProductDetailWithProduct(productDetailId);
+//            if (productDetail == null || productDetail.getProduct() == null) continue;
+//
+//            CartItemDTO dto = new CartItemDTO();
+//
+//            // ✅ Set id
+//            CartItemDTO.IdDTO idDTO = new CartItemDTO.IdDTO();
+//            idDTO.setCartId(item.getId().getCartId());
+//            idDTO.setProductDetailId(productDetail.getProductDetailID());
+//            dto.setId(idDTO);
+//
+//            // ✅ Set product
+//            dto.setProduct(productDetail.getProduct());
+//
+//            // ✅ Set productDetails
+//            dto.setProductDetails(List.of(productDetail));
+//
+//            // ✅ Set quantity & subtotal
+//            dto.setQuantity(item.getQuantity());
+//            dto.setSubTotal(item.getSubTotal());
+//
+//            response.add(dto);
+//        }
+//
+//        return response;
+//    }
 
-        for (CartItem item : cartItems) {
-            int productDetailId = item.getId().getProductDetailId();
-
-            // ✅ Gọi API mới để lấy cả ProductDetail và Product
-            ProductDetailDTO productDetail = productClient.getProductDetailWithProduct(productDetailId);
-            if (productDetail == null || productDetail.getProduct() == null) continue;
-
-            CartItemDTO dto = new CartItemDTO();
-
-            // ✅ Set id
-            CartItemDTO.IdDTO idDTO = new CartItemDTO.IdDTO();
-            idDTO.setCartId(item.getId().getCartId());
-            idDTO.setProductDetailId(productDetail.getProductDetailID());
-            dto.setId(idDTO);
-
-            // ✅ Set product
-            dto.setProduct(productDetail.getProduct());
-
-            // ✅ Set productDetails
-            dto.setProductDetails(List.of(productDetail));
-
-            // ✅ Set quantity & subtotal
-            dto.setQuantity(item.getQuantity());
-            dto.setSubTotal(item.getSubTotal());
-
-            response.add(dto);
-        }
-
-        return response;
-    }
 
 
-    @Override
-    public List<CartItem> getCartItemsByCartId(int cartId) {
-        return List.of();
-    }
 
     @Override
     public CartItem addCartItem(CartItem cartItem) {
@@ -96,21 +93,44 @@ public class CartItemServiceImpl implements CartItemService {
         return cartItemRepository.save(cartItem);
     }
 
-
-
-
-
-
-
     @Override
     public CartItem getCartItemById(CartItemKey cartItemKey) {
-        return null;
+        return cartItemRepository.findById(cartItemKey).orElse(null);
     }
 
     @Override
     public CartItem updateQuantity(CartItemKey id, CartItem cartItem) {
+        Optional<CartItem> opt = cartItemRepository.findById(id);
+        if (opt.isPresent()) {
+            CartItem existingItem = opt.get();
+
+            // Cập nhật số lượng
+            existingItem.setQuantity(cartItem.getQuantity());
+
+            // Cập nhật subtotal nếu cần
+            ProductDetailDTO productDetail = productClient.getProductDetailWithProduct(id.getProductDetailId());
+            if (productDetail != null && productDetail.getProduct() != null) {
+                double price = productDetail.getProduct().getPrice();
+                existingItem.setSubTotal(price * cartItem.getQuantity());
+            }
+
+            return cartItemRepository.save(existingItem);
+        }
         return null;
     }
+
+
+    @Override
+    public List<CartItem> getCartItemsByCartId(int cartId) {
+        // Trả về list CartItem entity
+        return cartItemRepository.findCartItemsByCartId(cartId);
+    }
+
+
+
+
+
+
 
     @Override
     public void deleteCartItem(CartItemKey id) {

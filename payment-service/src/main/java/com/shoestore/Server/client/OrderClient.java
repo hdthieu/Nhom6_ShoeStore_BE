@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "order-service", url = "http://localhost:8765/Order")
+//@FeignClient(name = "order-service", url = "http://api-gateway:8765/Order")
+
 public interface OrderClient {
     @GetMapping("/{id}")
     OrderDTO getOrderById(@PathVariable("id") int id);

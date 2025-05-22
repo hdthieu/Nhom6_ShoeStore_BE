@@ -1,19 +1,23 @@
 package com.shoestore.Server.controller;
 
 import com.shoestore.Server.clients.ProductClient;
+import com.shoestore.Server.dto.CartDTO;
 import com.shoestore.Server.dto.ProductDTO;
 import com.shoestore.Server.dto.ProductDetailDTO;
 import com.shoestore.Server.entities.Cart;
 import com.shoestore.Server.entities.CartItem;
 import com.shoestore.Server.entities.CartItemKey;
+import com.shoestore.Server.entities.User;
 import com.shoestore.Server.service.CartItemService;
 import com.shoestore.Server.service.CartService;
 
 import com.shoestore.Server.clients.ProductClient;
+import com.shoestore.Server.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,11 +27,13 @@ public class CartController {
     private final CartItemService cartItemService;
     private final CartService cartService;
     private final ProductClient productClient;
+    private final UserService userService;
 
-    public CartController(CartItemService cartItemService, CartService cartService, ProductClient productClient) {
+    public CartController(CartItemService cartItemService, CartService cartService, ProductClient productClient, UserService userService) {
         this.cartItemService = cartItemService;
         this.cartService = cartService;
         this.productClient = productClient;
+        this.userService = userService;
     }
 
     @PutMapping("/update/{cartId}/{productDetailId}")
@@ -59,11 +65,57 @@ public class CartController {
                 : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+//    @GetMapping("/userid/{userId}")
+//    public ResponseEntity<Cart> getCartByUserId(@PathVariable("userId") int userId) {
+//        Cart cart = cartService.getCartByUserId(userId);
+//
+//        if (cart.getCartItems() != null) {
+//            for (CartItem item : cart.getCartItems()) {
+//                int productDetailId = item.getId().getProductDetailId();
+//
+//                try {
+//                    ProductDetailDTO dto = productClient.getProductDetailWithProduct(productDetailId);
+//                    item.setStockQuantity(dto.getStockQuantity());
+//                } catch (Exception e) {
+//                    System.err.println("❌ Lỗi khi gọi productClient: " + e.getMessage());
+//                    item.setStockQuantity(0); // fallback nếu gọi lỗi
+//                }
+//            }
+//        }
+//
+//        return ResponseEntity.ok(cart);
+//    }
     @GetMapping("/userid/{userId}")
     public ResponseEntity<Cart> getCartByUserId(@PathVariable("userId") int userId) {
         Cart cart = cartService.getCartByUserId(userId);
+
+        // ❌ Nếu chưa có thì tạo mới (tương đương logic createCartForUser)
+        if (cart == null) {
+            cart = cartService.createCartForUser(userId); // dùng luôn hàm tạo có sẵn
+            if (cart == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(null); // hoặc return error nếu tạo thất bại
+            }
+        }
+
+        // ✅ Cập nhật số lượng tồn kho
+        if (cart.getCartItems() != null) {
+            for (CartItem item : cart.getCartItems()) {
+                int productDetailId = item.getId().getProductDetailId();
+
+                try {
+                    ProductDetailDTO dto = productClient.getProductDetailWithProduct(productDetailId);
+                    item.setStockQuantity(dto.getStockQuantity());
+                } catch (Exception e) {
+                    System.err.println("❌ Lỗi khi gọi productClient: " + e.getMessage());
+                    item.setStockQuantity(0);
+                }
+            }
+        }
+
         return ResponseEntity.ok(cart);
     }
+
 
     @GetMapping("/cart-item/{cartId}")
     public ResponseEntity<List<CartItem>> getCartItemsByCartId(@PathVariable("cartId") int cartId) {
@@ -99,6 +151,41 @@ public class CartController {
             return ResponseEntity.badRequest().body("Lỗi hệ thống: " + e.getMessage());
         }
     }
+    @PutMapping("/item/update")
+    public ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody CartItem cartItem) {
+        if (cartItem == null || cartItem.getId() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        CartItem updatedItem = cartItemService.updateQuantity(cartItem.getId(), cartItem);
+        if (updatedItem != null) {
+            return ResponseEntity.ok(updatedItem);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+    @PostMapping("/create")
+    public ResponseEntity<Cart> createCartForUser(@RequestBody int userId) {
+        // Kiểm tra nếu người dùng đã có giỏ hàng
+        Cart existingCart = cartService.getCartByUserId(userId);
+        if (existingCart != null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        // Tạo giỏ hàng mới
+        Cart newCart = cartService.createCartForUser(userId);
+        return ResponseEntity.ok(newCart);
+    }
+    @PostMapping("/save")
+    public ResponseEntity<CartDTO> saveCart(@RequestBody CartDTO cartDTO) {
+        try {
+            return ResponseEntity.ok(cartService.saveCart(cartDTO));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 
 
 

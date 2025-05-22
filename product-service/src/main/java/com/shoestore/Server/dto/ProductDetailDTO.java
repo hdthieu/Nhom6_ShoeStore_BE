@@ -25,5 +25,7 @@ public class ProductDetailDTO {
     private String size;
     private int stockQuantity;
     private ProductDTO product;
+    private String productName;
+    private int productID;
 
 }

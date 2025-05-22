@@ -1,9 +1,11 @@
 package com.example.apigateway.config;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import reactor.core.publisher.Mono;
 
 @Configuration
 public class GlobalCorsConfig {
@@ -20,5 +22,13 @@ public class GlobalCorsConfig {
 
         return new CorsWebFilter(source);
     }
+
+    @Bean
+    public KeyResolver userKeyResolver() {
+        return exchange -> Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());
+    }
+
+
+
 }
 

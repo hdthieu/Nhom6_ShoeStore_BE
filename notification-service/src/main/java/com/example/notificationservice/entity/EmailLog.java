@@ -28,6 +28,7 @@ public class EmailLog {
 
     private boolean success;
 
+    @Column(length = 1000)
     private String errorMessage;
 
     private LocalDateTime sentAt;
