@@ -2,30 +2,34 @@ package com.shoestore.Server.service.impl;
 
 import com.shoestore.Server.client.ProductClient;
 import com.shoestore.Server.client.UserClient;
-import com.shoestore.Server.dto.response.LoyalCustomerDTO;
-import com.shoestore.Server.dto.response.UserResponseDTO;
-import com.shoestore.Server.dto.response.VoucherResponseDTO;
+import com.shoestore.Server.config.RabbitMQConfig;
+import com.shoestore.Server.dto.OrderReturnedEvent;
+import com.shoestore.Server.dto.response.*;
 import com.shoestore.Server.entities.Order;
 import com.shoestore.Server.entities.OrderDetail;
 import com.shoestore.Server.repositories.OrderRepository;
 import com.shoestore.Server.service.OrderService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserClient userClient;
     private final ProductClient productClient;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     @PersistenceContext
     private EntityManager entityManager;
-
     public OrderServiceImpl(OrderRepository orderRepository, UserClient userClient, ProductClient productClient) {
         this.orderRepository = orderRepository;
         this.userClient = userClient;
@@ -74,19 +78,57 @@ public class OrderServiceImpl implements OrderService {
         return data;
     }
 
-
     public void updateOrderStatus(int orderId, String status) {
-        // Tìm đơn hàng theo ID
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isEmpty()) {
-            throw new IllegalArgumentException("Không tìm thấy đơn hàng với ID: " + orderId);
+            throw new IllegalArgumentException("Không tìm thấy đơn hàng.");
         }
 
-        // Cập nhật trạng thái
         Order order = optionalOrder.get();
         order.setStatus(status);
         orderRepository.save(order);
+
+        // Nếu trạng thái là "Return", gửi sự kiện trả lại
+        if ("Return".equalsIgnoreCase(status)) {
+            OrderReturnedEvent event = new OrderReturnedEvent();
+            event.setOrderId(orderId);
+
+            List<OrderReturnedEvent.ProductQuantity> items = order.getOrderDetails().stream()
+                    .map(detail -> {
+                        OrderReturnedEvent.ProductQuantity pq = new OrderReturnedEvent.ProductQuantity();
+                        pq.setProductId(detail.getProductDetail());
+                        pq.setQuantity(detail.getQuantity());
+                        ProductResponseDTO product = productClient.getProductById(detail.getProductDetail());
+                        List<ProductDetailDTO> productDetails = product.getProductDetails();
+                        for (ProductDetailDTO productDetail : productDetails) {
+                            pq.setColor(productDetail.getColor());
+                            pq.setSize(productDetail.getSize());
+                        }
+
+                        return pq;
+                    }).collect(Collectors.toList());
+
+            event.setItems(items);
+
+            // Gửi sự kiện trả lại đơn hàng qua RabbitMQ
+            System.out.println("check RabbitMQ for orderId: " + orderId);
+            System.out.println("Sending order returned event to RabbitMQ for orderId: " + orderId);
+            rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE, RabbitMQConfig.ROUTING_KEY, event);
+        }
     }
+
+//    public void updateOrderStatus(int orderId, String status) {
+//        // Tìm đơn hàng theo ID
+//        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+//        if (optionalOrder.isEmpty()) {
+//            throw new IllegalArgumentException("Không tìm thấy đơn hàng với ID: " + orderId);
+//        }
+//
+//        // Cập nhật trạng thái
+//        Order order = optionalOrder.get();
+//        order.setStatus(status);
+//        orderRepository.save(order);
+//    }
 
     @Override
     public Order findById(int orderID) {
@@ -99,26 +141,62 @@ public class OrderServiceImpl implements OrderService {
         SELECT o 
         FROM Order o
         JOIN FETCH o.orderDetails od
-        ORDER BY o.orderDate ASC
+        ORDER BY o.orderID ASC
         """;
 
         // Thực thi truy vấn JPQL
         return entityManager.createQuery(jpql, Order.class).getResultList();
     }
 
-    @Override
-    public Map<String, Object> getRevenueStatistics(LocalDate startDate, LocalDate endDate){
-        List<Order> orders = orderRepository.findByOrderDateBetween(startDate, endDate);
-        double totalRevenue = orders.stream()
-                .mapToDouble(order -> order.getOrderDetails().stream()
+//    @Override
+//    public Map<String, Object> getRevenueStatistics(LocalDate startDate, LocalDate endDate){
+//        List<Order> orders = orderRepository.findByOrderDateBetween(startDate, endDate);
+//        double totalRevenue = orders.stream()
+//                .mapToDouble(order -> order.getOrderDetails().stream()
+//                        .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
+//                        .sum() + order.getFeeShip())
+//                .sum();
+//        Map<String, Object> stats = new HashMap<>();
+//        stats.put("totalRevenue", totalRevenue);
+//        stats.put("totalOrders", orders.size());
+//        return stats;
+//    }
+@Override
+public Map<String, Object> getRevenueStatistics(LocalDate startDate, LocalDate endDate) {
+    List<Order> orders = orderRepository.findByOrderDateBetween(startDate, endDate);
+
+    double totalRevenue = orders.stream()
+            .mapToDouble(order -> {
+                double orderTotal = order.getOrderDetails().stream()
                         .mapToDouble(detail -> detail.getPrice() * detail.getQuantity())
-                        .sum() + order.getFeeShip())
-                .sum();
-        Map<String, Object> stats = new HashMap<>();
-        stats.put("totalRevenue", totalRevenue);
-        stats.put("totalOrders", orders.size());
-        return stats;
-    }
+                        .sum();
+
+                double discount = 0.0;
+
+                if (order.getVoucherID() > 0) {
+                    try {
+                        VoucherResponseDTO voucher = productClient.getVoucherById(order.getVoucherID());
+
+                        if ("Percentage".equalsIgnoreCase(voucher.getDiscountType())) {
+                            discount = orderTotal * (voucher.getDiscountValue() / 100.0);
+                        } else if ("Flat".equalsIgnoreCase(voucher.getDiscountType())) {
+                            discount = voucher.getDiscountValue();
+                        }
+                    } catch (Exception e) {
+                        // Handle lỗi nếu ProductService không phản hồi, hoặc voucherID không tồn tại
+                        System.err.println("Lỗi khi gọi ProductService: " + e.getMessage());
+                    }
+                }
+
+                return (orderTotal - discount) + order.getFeeShip();
+            })
+            .sum();
+
+    Map<String, Object> stats = new HashMap<>();
+    stats.put("totalRevenue", totalRevenue);
+    stats.put("totalOrders", orders.size());
+    return stats;
+}
 
     // lấy doanh thu 1 năm và số sản phẩm
 //    @Override
@@ -196,6 +274,13 @@ public List<LoyalCustomerDTO> getTop10LoyalCustomers(int minOrders) {
         return orderRepository.findByStatusIgnoreCase(status, pageable);
     }
 
+    @Override
+    public List<Order> getOrdersByUserId(Integer userId) {
+        return orderRepository.findByUserID(userId);
+    }
 
-
+    @Override
+    public Order addOrder(Order order) {
+        return orderRepository.save(order);
+    }
 }

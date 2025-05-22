@@ -9,13 +9,17 @@ import java.util.List;
 public class CartItemDTO {
     private IdDTO id;
     private ProductDTO product;
+
     @JsonProperty("productDetails")
     private List<ProductDetailDTO> productDetails;
+
     private int quantity;
     private double subTotal;
+
     @Data
     public static class IdDTO {
         private int cartId;
-        private int productId;
+        private int productDetailId; // ✅ Đã sửa đúng tên biến để mapping được
     }
 }
+

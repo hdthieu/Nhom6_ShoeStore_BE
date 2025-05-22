@@ -36,7 +36,7 @@ public class Order {
 //    @ManyToOne
 //    @JoinColumn(name = "userID")
 //    private User user;
-
+@JoinColumn(name = "userID")
     private int userID;
 
 
@@ -115,4 +115,5 @@ public class Order {
     public void setUserID(int userID) {
         this.userID = userID;
     }
+
 }

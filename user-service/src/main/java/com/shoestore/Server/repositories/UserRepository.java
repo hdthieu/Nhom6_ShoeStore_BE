@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer> {
@@ -36,7 +37,5 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     List<User> findUsersWithAddressesByRoleName(@Param("roleName") String roleName);
     @Query("SELECT u FROM User u JOIN FETCH u.addresses WHERE u.role.name = :roleName AND u.userID = :id")
     List<User> findByRoleAndId(@Param("roleName") String roleName, @Param("id") int id);
-
-
 
 }

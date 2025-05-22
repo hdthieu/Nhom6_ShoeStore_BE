@@ -20,5 +20,5 @@ public class ProductResponseDTO {
         private List<String> imgUrl;
         private BrandDTO brand;
         private CategoryDTO category;
-
+        private List<ProductDetailDTO> productDetails;
 }

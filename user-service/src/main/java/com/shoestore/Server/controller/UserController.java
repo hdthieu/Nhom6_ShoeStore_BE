@@ -59,15 +59,22 @@ public class UserController {
     }
 
     // Tìm người dùng theo email
-    @GetMapping("/findByEmail")
+//    @GetMapping("/findByEmail")
+//    public ResponseEntity<?> findByEmail(@RequestParam String email) {
+//        User user = userService.findByEmail(email);
+//        if (user != null) {
+//            return ResponseEntity.ok(user);
+//
+//        }
+//        return ResponseEntity.ok().body(null);
+//    }
+@GetMapping("/findByEmail")
     public ResponseEntity<?> findByEmail(@RequestParam String email) {
         User user = userService.findByEmail(email);
-        if (user != null) {
-            return ResponseEntity.ok(user);
-
-        }
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok(user);
     }
+
+
 
     // Lấy danh sách tất cả người dùng
     @GetMapping("/findAll")

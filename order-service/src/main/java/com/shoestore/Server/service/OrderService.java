@@ -3,7 +3,6 @@ package com.shoestore.Server.service;
 
 import com.shoestore.Server.dto.response.LoyalCustomerDTO;
 import com.shoestore.Server.entities.Order;
-import com.shoestore.Server.entities.OrderDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,8 @@ public interface OrderService {
     public void updateOrderStatus(int orderId, String status) ;
     public Order findById(int orderID);
     public Page<Order> findByStatus(String status, Pageable pageable);
+    List<Order> getOrdersByUserId(Integer userId);
+    Order addOrder(Order order);
 }
 
 

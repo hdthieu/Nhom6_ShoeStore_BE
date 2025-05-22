@@ -2,20 +2,26 @@ package com.shoestore.Server.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
-@Data
-@Table
+@Getter
+@Setter
+@Table(name = "Receipt")
 public class Receipt {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "receiptID")
-    private int receiptID;
-    private double total;
+    private Integer receiptID;
+
     private LocalDate receiptDate;
-    @OneToOne(cascade = CascadeType.ALL)
+    private Double total;
+
+    @ManyToOne
     @JoinColumn(name = "paymentID")
     private Payment payment;
+
+    // Getter, Setter
 }
