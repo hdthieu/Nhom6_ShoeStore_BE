@@ -1,25 +1,32 @@
 package com.shoestore.Server.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 import java.util.List;
 
+
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Data
+@NoArgsConstructor
 public class CartItemDTO {
-    private IdDTO id;
-    private ProductDTO product;
-
-    @JsonProperty("productDetails")
-    private List<ProductDetailDTO> productDetails;
-
+    private int cartId;
+    private int productDetailId;
     private int quantity;
     private double subTotal;
 
-    @Data
-    public static class IdDTO {
-        private int cartId;
-        private int productDetailId; // ✅ Đã sửa đúng tên biến để mapping được
-    }
+    private String productName;
+    private String productImage;
+    private double productPrice;
+    private String color;
+    private String size;
+
+//    @Transient
+//    private int stockQuantity;
 }
+
 
