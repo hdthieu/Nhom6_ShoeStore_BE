@@ -97,7 +97,7 @@ VALUES
 ('Adidas'),
 ('Puma'),
 ('Reebok'),
-('Under Armour');
+('Vans');
 
 -- Thêm dữ liệu cho bảng Category
 INSERT INTO Category (description, name)
@@ -144,60 +144,59 @@ INSERT INTO Product (description, price, productName, status, brandID, categoryI
 VALUES
 ('High-performance running shoes.', 900000.00, 'Nike Air Max 270', 'Available', 1, 1,  1,GETDATE()),
 ('Lightweight basketball sneakers.', 1200000.00, 'Adidas Harden Vol. 5', 'Available', 2, 2, 2,GETDATE()),
-('Stylish hiking boots.', 150000.00, 'Timberland Premium', 'Available', 3, 3,  3,GETDATE()),
-('Everyday wear sneakers.', 800000.00, 'Converse Chuck Taylor', 'Available', 4, 4,  4,GETDATE()),
-('Elegant leather loafers.', 1000000.00, 'Clarks Originals', 'Available', 5, 5, 5,GETDATE()),
-('Performance tennis shoes.', 1100000.00, 'Asics Gel-Resolution', 'Available', 1, 6,  6,GETDATE()),
-('Classic skate shoes.', 750000.00, 'Vans Old Skool', 'Available', 2, 7,  7,GETDATE()),
-('Premium long-distance runners.', 950000.00, 'Brooks Ghost 14', 'Available', 3, 8, 8,GETDATE()),
-('Breathable sports sandals.', 500000.00, 'Teva Hurricane XLT2', 'Available', 4, 9, 9,GETDATE()),
-('Luxury high heels.', 200000.00, 'Jimmy Choo Romy 100', 'Available', 5, 10,10,GETDATE()),
-('Comfort-focused sneakers.', 850000.00, 'New Balance 574', 'Available', 1, 1, 1,GETDATE()),
-('High-performance trainers.', 120000.00, 'Under Armour HOVR', 'Available', 2, 2,2,GETDATE()),
-('Waterproof outdoor boots.', 130000.00, 'Columbia Bugaboot', 'Available', 3, 3,3,GETDATE()),
-('Athletic running shoes.', 100000.00, 'Saucony Endorphin', 'Available', 4, 4,4,GETDATE()),
-('Modern casual loafers.', 900000.00, 'Sperry Top-Sider', 'Available', 5, 5,5,GETDATE()),
-('Lightweight running shoes.', 750000.00, 'Reebok Floatride', 'Available', 1, 6, 6,GETDATE()),
-('Classic canvas shoes.', 550000.00, 'Keds Champion', 'Available', 2, 7, 7,GETDATE()),
-('Trail running shoes.', 1100000.00, 'Salomon Speedcross', 'Available', 3, 8, 8,GETDATE()),
-('Minimalist sports sandals.', 600000.00, 'Xero Shoes Z-Trail', 'Available', 4, 9,9,GETDATE()),
-('Luxury dress shoes.', 2500000.00, 'Gucci Ace Sneakers', 'Available', 5, 10, 10,GETDATE()),
-('Casual slip-on sneakers.', 700000.00, 'Skechers Go Walk', 'Available', 1, 1, 1,GETDATE()),
-('Basketball performance shoes.', 140000.00, 'Puma Clyde All-Pro', 'Available', 2, 2,2,GETDATE()),
-('Hiking boots with ankle support.', 1600000.00, 'North Face Vectiv', 'Available', 3, 3,  3,GETDATE()),
-('Canvas skate shoes.', 750000.00, 'DC Shoes Trase', 'Available', 4, 4, 4,GETDATE()),
-('Formal leather oxford shoes.', 130000.00, 'Allen Edmonds Park Ave', 'Available', 5, 5, 5,GETDATE()),
-('Cushioned tennis shoes.', 1150000.00, 'Fila Axilus 2 Energized', 'Available', 1, 6, 6,GETDATE()),
-('Classic low-top sneakers.', 900000.00, 'Lacoste Carnaby Evo', 'Available', 2, 7, 7,GETDATE()),
-('Trail running shoes for grip.', 1250000.00, 'Hoka Speedgoat', 'Available', 3, 8, 8,GETDATE()),
-('Open-toe sports sandals.', 450000.00, 'Merrell Hydro MOC', 'Available', 4, 9, 9,GETDATE()),
-('Elegant party heels.', 220000.00, 'Manolo Blahnik BB', 'Available', 5, 10, 10,GETDATE()),
-('Everyday cushioned sneakers.', 1000000.00, 'On Cloud 5', 'Available', 1, 1, 1,GETDATE()),
-('Durable basketball sneakers.', 1500000.00, 'Jordan Retro 1', 'Available', 2, 2,2,GETDATE()),
-('Warm insulated boots.', 180000.00, 'Sorel Caribou', 'Available', 3, 3, 3,GETDATE()),
-('Stylish slip-ons.', 700000.00, 'Toms Alpargata', 'Available', 4, 4,4,GETDATE()),
-('Premium leather loafers.', 1900000.00, 'Tods Gommino', 'Available', 5, 5,5,GETDATE()),
-('High-traction trail runners.', 1300000.00, 'Arcteryx Norvan', 'Available', 1, 6,6,GETDATE()),
-('Skateboarding classics.', 750000.00, 'Globe Sabre', 'Available', 2, 7, 7,GETDATE()),
-('All-terrain shoes.', 140000.00, 'Altra Lone Peak', 'Available', 3, 8, 8,GETDATE()),
-('Quick-dry sandals.', 500000.00, 'Chaco Z/Cloud', 'Available', 4, 9, 9,GETDATE()),
-('Luxury red sole heels.', 800000.00, 'Christian Louboutin So Kate', 'Available', 5, 10,10,GETDATE()),
-('Lightweight walking shoes.', 600000.00, 'Skechers Flex Appeal', 'Available', 1, 1, 1,GETDATE()),
-('Responsive basketball shoes.', 1300000.00, 'Nike Zoom Freak', 'Available', 2, 2, 2,GETDATE()),
-('Rugged hiking boots.', 1700000.00, 'Scarpa Zodiac Plus', 'Available', 3, 3,3,GETDATE()),
-('Casual street sneakers.', 950000.00, 'Adidas Superstar', 'Available', 4, 4,4,GETDATE()),
-('Italian leather dress shoes.', 2500000.00, 'Santoni Double Monk', 'Available', 5, 5,5,GETDATE()),
-('Lightweight walking shoes.', 600000.00, 'Skechers Flex Appeal', 'Available', 1, 1, 1,GETDATE()),
-('Responsive basketball shoes.', 1300000.00, 'Nike Zoom Freak', 'Available', 2, 2, 2,GETDATE()),
-('Rugged hiking boots.', 1700000.00, 'Scarpa Zodiac Plus', 'Available', 3, 3,3,GETDATE()),
-('Casual street sneakers.', 950000.00, 'Adidas Superstar', 'Available', 4, 4, 4,GETDATE()),
-('Italian leather dress shoes.', 2500000.00, 'Santoni Double Monk', 'Available', 5, 5, 5,GETDATE());
-EXEC sp_help Product;
-ALTER TABLE Product
-ALTER COLUMN price DECIMAL(12, 2);
-DELETE FROM Product;
-UPDATE Product
-SET price = price * 10000;
+('Stylish hiking boots.', 150000.00, 'Puma Timberland', 'Available', 3, 3,  3,GETDATE()),
+('Everyday wear sneakers.', 800000.00, 'Reebok Chuck Taylor', 'Available', 4, 4,  4,GETDATE()),
+('Elegant leather loafers.', 1000000.00, 'Vans Originals', 'Available', 5, 5, 5,GETDATE()),
+('Performance tennis shoes.', 1100000.00, 'Nike Gel-Resolution', 'Available', 1, 6,  6,GETDATE()),
+('Classic skate shoes.', 750000.00, 'Adidas Old Skool', 'Available', 2, 7,  7,GETDATE()),
+('Premium long-distance runners.', 950000.00, 'Puma Ghost 14', 'Available', 3, 8, 8,GETDATE()),
+('Breathable sports sandals.', 500000.00, 'Reebok Hurricane XLT2', 'Available', 4, 9, 9,GETDATE()),
+('Luxury high heels.', 200000.00, 'Vans Choo Romy 100', 'Available', 5, 10,10,GETDATE()),
+('Comfort-focused sneakers.', 850000.00, 'Nike Balance 574', 'Available', 1, 1, 1,GETDATE()),
+('High-performance trainers.', 120000.00, 'Adidas Armour HOVR', 'Available', 2, 2,2,GETDATE()),
+('Waterproof outdoor boots.', 130000.00, 'Puma Bugaboot', 'Available', 3, 3,3,GETDATE()),
+('Athletic running shoes.', 100000.00, 'Reebok Endorphin', 'Available', 4, 4,4,GETDATE()),
+('Modern casual loafers.', 900000.00, 'Vans Top-Sider', 'Available', 5, 5,5,GETDATE()),
+('Lightweight running shoes.', 750000.00, 'Nike Reebok Floatride', 'Available', 1, 6, 6,GETDATE()),
+('Classic canvas shoes.', 550000.00, 'Adidas Champion', 'Available', 2, 7, 7,GETDATE()),
+('Trail running shoes.', 1100000.00, 'Puma Salomon Speedcross', 'Available', 3, 8, 8,GETDATE()),
+('Minimalist sports sandals.', 600000.00, 'Reebok Xero Shoes Z-Trail', 'Available', 4, 9,9,GETDATE()),
+('Luxury dress shoes.', 2500000.00, 'Vans Ace Sneakers', 'Available', 5, 10, 10,GETDATE()),
+('Casual slip-on sneakers.', 700000.00, 'Adidas Go Walk', 'Available', 1, 1, 1,GETDATE()),
+('Basketball performance shoes.', 140000.00, 'Adidas Clyde All-Pro', 'Available', 2, 2,2,GETDATE()),
+('Hiking boots with ankle support.', 1600000.00, 'Puma Face Vectiv', 'Available', 3, 3,  3,GETDATE()),
+('Canvas skate shoes.', 750000.00, 'Reebok Shoes Trase', 'Available', 4, 4, 4,GETDATE()),
+('Formal leather oxford shoes.', 130000.00, 'Vans Allen Edmonds Park Ave', 'Available', 5, 5, 5,GETDATE()),
+('Cushioned tennis shoes.', 1150000.00, 'Nike Axilus 2 Energized', 'Available', 1, 6, 6,GETDATE()),
+('Classic low-top sneakers.', 900000.00, 'Adidas Carnaby Evo', 'Available', 2, 7, 7,GETDATE()),
+('Trail running shoes for grip.', 1250000.00, 'Puma Hoka Speedgoat', 'Available', 3, 8, 8,GETDATE()),
+('Open-toe sports sandals.', 450000.00, 'Reebok Hydro MOC', 'Available', 4, 9, 9,GETDATE()),
+('Elegant party heels.', 220000.00, 'Vans Manolo Blahnik BB', 'Available', 5, 10, 10,GETDATE()),
+('Everyday cushioned sneakers.', 1000000.00, 'Nike On Cloud 5', 'Available', 1, 1, 1,GETDATE()),
+('Durable basketball sneakers.', 1500000.00, 'Adidas Jordan Retro 1', 'Available', 2, 2,2,GETDATE()),
+('Warm insulated boots.', 180000.00, 'Puma Sorel Caribou', 'Available', 3, 3, 3,GETDATE()),
+('Stylish slip-ons.', 700000.00, 'Reebok Toms Alpargata', 'Available', 4, 4,4,GETDATE()),
+('Premium leather loafers.', 1900000.00, 'Vans Tods Gommino', 'Available', 5, 5,5,GETDATE()),
+('High-traction trail runners.', 1300000.00, 'Nike Arcteryx Norvan', 'Available', 1, 6,6,GETDATE()),
+('Skateboarding classics.', 750000.00, 'Adidas Globe Sabre', 'Available', 2, 7, 7,GETDATE()),
+('All-terrain shoes.', 140000.00, 'Puma Lone Peak', 'Available', 3, 8, 8,GETDATE()),
+('Quick-dry sandals.', 500000.00, 'Reebok Chaco Z/Cloud', 'Available', 4, 9, 9,GETDATE()),
+('Luxury red sole heels.', 800000.00, 'Vans Christian Louboutin So Kate', 'Available', 5, 10,10,GETDATE()),
+('Lightweight walking shoes.', 600000.00, 'Nike Skechers Flex Appeal', 'Available', 1, 1, 1,GETDATE()),
+('Responsive basketball shoes.', 1300000.00, 'Adidas Zoom Freak', 'Available', 2, 2, 2,GETDATE()),
+('Rugged hiking boots.', 1700000.00, 'Puma Zodiac Plus', 'Available', 3, 3,3,GETDATE()),
+('Casual street sneakers.', 950000.00, 'Reebok Superstar', 'Available', 4, 4,4,GETDATE()),
+('Italian leather dress shoes.', 2500000.00, 'Vans Double Monk', 'Available', 5, 5,5,GETDATE()),
+('Responsive basketball shoes.', 1300000.00, 'Adidas Zoom Freak', 'Available', 2, 2, 2,GETDATE()),
+('Rugged hiking boots.', 1700000.00, 'Puma Zodiac Plus', 'Available', 3, 3,3,GETDATE()),
+('Casual street sneakers.', 950000.00, 'Reebok Superstar', 'Available', 4, 4, 4,GETDATE()),
+('Italian leather dress shoes.', 2500000.00, 'Vans Double Monk', 'Available', 5, 5, 5,GETDATE());
+--EXEC sp_help Product;
+--ALTER TABLE Product
+--ALTER COLUMN price DECIMAL(12, 2);
+--DELETE FROM Product;
+--UPDATE Product
+--SET price = price * 10000;
 INSERT INTO ProductDetail (color, size, stockQuantity, productID)
 VALUES
 ('RED', 'SIZE_38', 50, 1),
@@ -303,16 +302,7 @@ VALUES
 (48, '../images/product48.png'),
 (49, '../images/product49.png'),
 (50, '../images/product50.png');
-UPDATE Product_ImageURL
-SET imageURL = REPLACE(imageURL, '../images/', '')
-WHERE imageURL LIKE '../images/%';
-UPDATE Product_ImageURL
-SET imageURL = 'product' + CAST(productID AS VARCHAR) + '_1.png'
-WHERE imageURL = 'product' + CAST(productID AS VARCHAR);
-UPDATE Product_ImageURL SET imageURL = 'product1_1.png' WHERE productID = 1;
-UPDATE Product_ImageURL
-SET imageURL = 'product1_1.png'
-WHERE imageURL = 'product1 1.png';
+
 
 INSERT INTO Review (contents, createDate, start, productID, userID)
 VALUES
